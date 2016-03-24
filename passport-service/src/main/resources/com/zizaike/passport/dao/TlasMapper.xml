@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zizaike.passport.dao.TlasMapper" >
+  <resultMap id="BaseResultMap" type="com.zizaike.entity.passport.Tlas" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="tlas_ref" property="tlasRef" jdbcType="VARCHAR" />
+    <result column="tlas_one" property="tlasOne" jdbcType="VARCHAR" />
+    <result column="tlas_two" property="tlasTwo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, tlas_ref, tlas_one, tlas_two
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_tlas
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_tlas
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zizaike.entity.passport.Tlas" >
+    insert into t_tlas (id, tlas_ref, tlas_one, 
+      tlas_two)
+    values (#{id,jdbcType=INTEGER}, #{tlasRef,jdbcType=VARCHAR}, #{tlasOne,jdbcType=VARCHAR}, 
+      #{tlasTwo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zizaike.entity.passport.Tlas" >
+    insert into t_tlas
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="tlasRef != null" >
+        tlas_ref,
+      </if>
+      <if test="tlasOne != null" >
+        tlas_one,
+      </if>
+      <if test="tlasTwo != null" >
+        tlas_two,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="tlasRef != null" >
+        #{tlasRef,jdbcType=VARCHAR},
+      </if>
+      <if test="tlasOne != null" >
+        #{tlasOne,jdbcType=VARCHAR},
+      </if>
+      <if test="tlasTwo != null" >
+        #{tlasTwo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zizaike.entity.passport.Tlas" >
+    update t_tlas
+    <set >
+      <if test="tlasRef != null" >
+        tlas_ref = #{tlasRef,jdbcType=VARCHAR},
+      </if>
+      <if test="tlasOne != null" >
+        tlas_one = #{tlasOne,jdbcType=VARCHAR},
+      </if>
+      <if test="tlasTwo != null" >
+        tlas_two = #{tlasTwo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zizaike.entity.passport.Tlas" >
+    update t_tlas
+    set tlas_ref = #{tlasRef,jdbcType=VARCHAR},
+      tlas_one = #{tlasOne,jdbcType=VARCHAR},
+      tlas_two = #{tlasTwo,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="findAll" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from t_tlas
+    ORDER BY id
+  </select>
+  <select id="countAll" resultType="int">
+    SELECT
+      count(*)
+    FROM t_tlas
+  </select>
+  <insert id="insertBatch" parameterType="java.util.List" >
+   insert into t_tlas ( tlas_ref, tlas_one, 
+      tlas_two)
+    values 
+    <foreach collection="list" item="item" index="index" separator="," > 
+    ( #{item.tlasRef,jdbcType=VARCHAR}, 
+      #{item.tlasOne,jdbcType=VARCHAR}, 
+      #{item.tlasTwo,jdbcType=VARCHAR})
+    </foreach> 
+  </insert>
+</mapper>

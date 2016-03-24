@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zizaike.passport.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.zizaike.entity.passport.User" >
+    <id column="id" property="userId" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="mail" property="mail" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="user_type" property="userType" typeHandler="com.zizaike.passport.dao.handler.UserTypeHandler" />
+    <result column="integral" property="integral" jdbcType="INTEGER" />
+    <result column="login_count" property="loginCount" jdbcType="INTEGER" />
+    <result column="activation" property="activation" typeHandler="com.zizaike.passport.dao.handler.ActivationHandler" />
+    <result column="channel" property="channel" typeHandler="com.zizaike.passport.dao.handler.ChannelTypeHandler"/>
+    <result column="active" property="active" jdbcType="INTEGER" />
+    <result column="create_at" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="update_at" property="updateAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_name, nick_name, mail, mobile, user_type, integral, login_count, activation, channel,
+    active, create_at, update_at
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_user
+    where id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_user
+    where id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zizaike.entity.passport.User" >
+    insert into t_user (id, user_name, nick_name, 
+      mail, mobile, user_type, 
+      integral,channel, login_count, 
+      activation, 
+      active, create_at, update_at
+      )
+    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
+      #{mail,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
+      #{userType,typeHandler=com.zizaike.passport.dao.handler.UserTypeHandler,javaType=com.zizaike.entity.passport.domain.UserType}, 
+      #{integral,jdbcType=INTEGER},
+       #{channel,typeHandler=com.zizaike.passport.dao.handler.ChannelTypeHandler,javaType=com.zizaike.entity.base.ChannelType}, 
+       #{loginCount,jdbcType=INTEGER}, 
+       #{activation,typeHandler=com.zizaike.passport.dao.handler.ActivationHandler,javaType=com.zizaike.entity.passport.domain.Activation}, 
+      #{active,jdbcType=INTEGER}, #{createAt,jdbcType=TIMESTAMP}, #{updateAt,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zizaike.entity.passport.User" >
+    insert into t_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="nickName != null" >
+        nick_name,
+      </if>
+      <if test="mail != null" >
+        mail,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="userType != null" >
+        user_type,
+      </if>
+      <if test="integral != null" >
+        integral,
+      </if>
+      <if test="channel != null" >
+        channel,
+      </if>
+      <if test="loginCount != null" >
+        login_count,
+      </if>
+      <if test="activation != null" >
+        activation,
+      </if>
+      <if test="active != null" >
+        active,
+      </if>
+      <if test="createAt != null" >
+        create_at,
+      </if>
+      <if test="updateAt != null" >
+        update_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null" >
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="mail != null" >
+        #{mail,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null" >
+        #{userType,javaType=com.zizaike.entity.passport.domain.UserType},
+      </if>
+      <if test="integral != null" >
+        #{integral,jdbcType=INTEGER},
+      </if>
+      <if test="channel != null" >
+        #{channel,javaType=com.zizaike.entity.base.ChannelType},
+      </if>
+      <if test="loginCount != null" >
+        #{loginCount,jdbcType=INTEGER},
+      </if>
+      <if test="activation != null" >
+        #{activation,javaType=com.zizaike.entity.passport.domain.Activation},
+      </if>
+      <if test="active != null" >
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAt != null" >
+        #{updateAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zizaike.entity.passport.User" >
+    update t_user
+    <set >
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null" >
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="mail != null" >
+        mail = #{mail,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null" >
+        user_type = #{userType,javaType=com.zizaike.entity.passport.domain.UserType},
+      </if>
+      <if test="integral != null" >
+        integral = #{integral,jdbcType=INTEGER},
+      </if>
+      <if test="channel != null" >
+        channel = #{integral,javaType=com.zizaike.entity.base.ChannelType},
+      </if>
+      <if test="loginCount != null" >
+        login_count = #{loginCount,jdbcType=INTEGER},
+      </if>
+      <if test="activation != null" >
+        activation = #{activation,javaType=com.zizaike.entity.passport.domain.Activation},
+      </if>
+      <if test="active != null" >
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createAt != null" >
+        create_at = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAt != null" >
+        update_at = #{updateAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zizaike.entity.passport.User" >
+    update t_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      mail = #{mail,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      user_type = #{userType,javaType=com.zizaike.entity.passport.domain.UserType},
+      integral = #{integral,jdbcType=INTEGER},
+      channel = #{integral,javaType=com.zizaike.entity.base.ChannelType},
+      login_count = #{loginCount,jdbcType=INTEGER},
+      activation =  #{activation,typeHandler=com.zizaike.passport.dao.handler.ActivationHandler,javaType=com.zizaike.entity.passport.domain.Activation}, 
+      active = #{active,jdbcType=INTEGER},
+      create_at = #{createAt,jdbcType=TIMESTAMP},
+      update_at = #{updateAt,jdbcType=TIMESTAMP}
+    where id = #{userId,jdbcType=INTEGER}
+  </update>
+  <insert id="saveByMobile" parameterType="com.zizaike.entity.passport.User" keyColumn="id" keyProperty="userId" useGeneratedKeys="true">
+    insert into t_user ( mobile, user_type, 
+      integral,channel, login_count, activation, 
+      active, create_at, update_at
+      )
+    values ( #{userName,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
+      #{mail,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
+       #{userType,typeHandler=com.zizaike.passport.dao.handler.UserTypeHandler,javaType=com.zizaike.entity.passport.domain.UserType}, 
+      #{integral,jdbcType=INTEGER},
+       #{channel,typeHandler=com.zizaike.passport.dao.handler.ChannelTypeHandler,javaType=com.zizaike.entity.base.ChannelType}, 
+       #{loginCount,jdbcType=INTEGER}, 
+        #{activation,typeHandler=com.zizaike.passport.dao.handler.ActivationHandler,javaType=com.zizaike.entity.passport.domain.Activation}, 
+      #{active,jdbcType=INTEGER}, #{createAt,jdbcType=TIMESTAMP}, #{updateAt,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="saveByEmail" parameterType="com.zizaike.entity.passport.User" keyColumn="id" keyProperty="userId" useGeneratedKeys="true">
+    insert into t_user (
+      nick_name, 
+      mobile, 
+      user_type, 
+      integral,
+      channel, 
+      login_count, 
+      activation, 
+      active, create_at, update_at
+      )
+    values ( 
+      #{nickName,jdbcType=VARCHAR}, 
+      #{mobile,jdbcType=VARCHAR}, 
+      #{userType,typeHandler=com.zizaike.passport.dao.handler.UserTypeHandler,javaType=com.zizaike.entity.passport.domain.UserType}, 
+      #{integral,jdbcType=INTEGER},
+      #{channel,typeHandler=com.zizaike.passport.dao.handler.ChannelTypeHandler,javaType=com.zizaike.entity.base.ChannelType}, 
+      #{loginCount,jdbcType=INTEGER},
+      #{activation,typeHandler=com.zizaike.passport.dao.handler.ActivationHandler,javaType=com.zizaike.entity.passport.domain.Activation}, 
+      #{active,jdbcType=INTEGER}, 
+      #{createAt,jdbcType=TIMESTAMP}, 
+      #{updateAt,jdbcType=TIMESTAMP}
+      )
+  </insert>
+</mapper>

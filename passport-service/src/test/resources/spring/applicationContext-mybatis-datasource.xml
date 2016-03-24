@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+            http://www.springframework.org/schema/beans 
+            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+			http://www.springframework.org/schema/aop 
+			http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+			http://www.springframework.org/schema/context 
+			http://www.springframework.org/schema/context/spring-context-4.0.xsd
+			http://www.springframework.org/schema/tx 
+			http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+			">
+	
+	 <!-- bean config for database and c3p0 -->
+ <!--  <bean id="zizaikeParentDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+    <property name="driverClass" value="${mysql.default.driver}" />
+    <property name="idleConnectionTestPeriod" value="${pool.c3p0.idle_connection_test_period}" />
+    <property name="preferredTestQuery" value="${pool.c3p0.preferred_test_query}" />
+    <property name="maxIdleTime" value="${pool.c3p0.max_idle_time}" />
+    当连接池里面的链接用完的时候, c3p0一次性获取的连接数
+    <property name="acquireIncrement" value="${pool.c3p0.acquire_increment}" />
+    最大连接数
+    <property name="maxPoolSize" value="${pool.c3p0.max_size}" />
+    最小连接数
+    <property name="minPoolSize" value="${pool.c3p0.min_size}" />
+  </bean> -->
+  
+  
+  <bean id="zizaikeParentDataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+		<!-- 数据库基本信息配置 -->
+		<property name="driverClassName" value="${mysql.default.driver}" />
+		<!-- 初始化连接数量 -->
+		<property name="initialSize" value="${pool.druid.initialSize}" />
+		<!-- 最大并发连接数 -->
+		<property name="maxActive" value="${pool.druid.maxActive}" />
+		<!-- 最大空闲连接数 -->
+		<property name="maxIdle" value="${pool.druid.maxIdle}" />
+		<!-- 最小空闲连接数 -->
+		<property name="minIdle" value="${pool.druid.minIdle}" />
+		<!-- 配置获取连接等待超时的时间 -->		
+		<property name="maxWait" value="${pool.druid.maxWait}" />
+		<!-- 超过时间限制是否回收 -->
+		<property name="removeAbandoned" value="${pool.druid.removeAbandoned}" />
+		<!-- 超过时间限制多长； -->
+		<property name="removeAbandonedTimeout" value="${pool.druid.removeAbandonedTimeout}" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${pool.druid.timeBetweenEvictionRunsMillis}" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="${pool.druid.minEvictableIdleTimeMillis}" />
+		<!-- 用来检测连接是否有效的sql，要求是一个查询语句-->	
+		<property name="validationQuery" value="${pool.druid.validationQuery}" />
+		<!-- 申请连接的时候检测 -->
+		<property name="testWhileIdle" value="${pool.druid.testWhileIdle}" />
+		<!-- 申请连接时执行validationQuery检测连接是否有效，配置为true会降低性能 -->
+		<property name="testOnBorrow" value="${pool.druid.testOnBorrow}" />
+		<!-- 归还连接时执行validationQuery检测连接是否有效，配置为true会降低性能  -->
+		<property name="testOnReturn" value="${pool.druid.testOnReturn}" />
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<property name="poolPreparedStatements" value="${pool.druid.poolPreparedStatements}" />		
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="${pool.druid.maxPoolPreparedStatementPerConnectionSize}" />
+		<!--属性类型是字符串，通过别名的方式配置扩展插件，常用的插件有：  				
+				监控统计用的filter:stat
+				日志用的filter:log4j
+ 				防御SQL注入的filter:wall -->
+		<property name="filters" value="${pool.druid.filters}" />		
+	</bean>
+   <!-- zizaike 主数据源 -->
+  <bean id="master" parent="zizaikeParentDataSource">
+    <property name="url" value="${mysql.master.url}" />
+    <property name="username" value="${mysql.master.user}" />
+    <property name="password" value="${mysql.master.password}" />
+  </bean>
+  <!-- zizaike 从数据源 -->
+  <bean id="slave" parent="zizaikeParentDataSource">
+    <property name="url" value="${mysql.slave.url}" />
+    <property name="username" value="${mysql.slave.user}" />
+    <property name="password" value="${mysql.slave.password}" />
+  </bean>
+    <bean id="dataSource" class="com.zizaike.core.framework.springext.database.DynamicDataSource">
+    <property name="targetDataSources">
+      <map key-type="java.lang.String">
+        <entry key="slave" value-ref="slave"/>
+        <entry key="master" value-ref="master"/>
+      </map>
+    </property>
+    <!-- 默认数据源为主库 -->
+    <property name="defaultTargetDataSource" ref="master" />
+  </bean>
+  <bean id="dataSourceAdvice" class="com.zizaike.core.framework.springext.database.DataSourceAdvice" />
+  <aop:config>
+    <aop:advisor advice-ref="dataSourceAdvice" pointcut="execution(* com.zizaike.commodity.dao..*Dao.*(..))"/>
+  </aop:config>
+</beans>
