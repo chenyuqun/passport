@@ -11,8 +11,6 @@ package com.zizaike.passport.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.zizaike.core.framework.exception.ZZKServiceException;
 import com.zizaike.entity.passport.Tlas;
 
