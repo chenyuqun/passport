@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
-import com.zizaike.entity.base.ChannelType;
+import com.zizaike.entity.passport.domain.ChannelType;
 
 /**  
  * ClassName:ChannelTypeHandler <br/>  

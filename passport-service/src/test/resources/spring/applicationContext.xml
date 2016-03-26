@@ -10,4 +10,5 @@
 	<import resource="applicationContext-mybatis-dao.xml" />
 	<import resource="applicationContext-mybatis-datasource.xml" />
 	<import resource="applicationContext-mybatis-tx.xml" />
+	<import resource="applicationContext-dubbo-consumer.xml" />
 </beans>

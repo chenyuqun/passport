@@ -33,7 +33,7 @@ import com.zizaike.passport.basetest.BaseTest;
  * @see        
  */
 @Transactional
-@TransactionConfiguration(defaultRollback = false)
+@TransactionConfiguration(defaultRollback = true)
 public class TlasServiceTest extends BaseTest{
     @Autowired
     private TlasService tlasService;
