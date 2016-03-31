@@ -9,8 +9,11 @@
 
 package com.zizaike.passport.service.impl;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zizaike.core.common.util.CommonUtil;
@@ -22,11 +25,18 @@ import com.zizaike.core.framework.exception.passport.EmailFormatIncorrectExcepti
 import com.zizaike.core.framework.exception.passport.IPFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.MobileFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.PasswordFormatIncorrectException;
+import com.zizaike.core.framework.exception.passport.UserAlreadlyExistException;
+import com.zizaike.entity.passport.Passport;
 import com.zizaike.entity.passport.PassportResult;
-import com.zizaike.entity.passport.domain.LoginType;
-import com.zizaike.entity.passport.domain.UserType;
+import com.zizaike.entity.passport.User;
+import com.zizaike.entity.passport.domain.Activation;
+import com.zizaike.entity.passport.domain.PassportStatus;
+import com.zizaike.entity.passport.domain.RegisterType;
 import com.zizaike.entity.passport.domain.vo.RegisterVo;
 import com.zizaike.is.passport.RegisterService;
+import com.zizaike.passport.service.PassportService;
+import com.zizaike.passport.service.TlasService;
+import com.zizaike.passport.service.UserService;
 import com.zizaike.passport.util.PassportUtil;
 
 /**
@@ -42,6 +52,12 @@ import com.zizaike.passport.util.PassportUtil;
 @Service
 public class RegisterServiceImpl implements RegisterService {
     private static final Logger LOG = LoggerFactory.getLogger(RegisterServiceImpl.class);
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private TlasService tlasService;
+    @Autowired
+    private PassportService passportService;
 
     @Override
     public PassportResult registerPassport(RegisterVo registerVo, String extend) throws ZZKServiceException {
@@ -52,13 +68,70 @@ public class RegisterServiceImpl implements RegisterService {
                     registerVo.getIp(), Constant.IP_DEFAULT);
             registerVo.setIp(Constant.IP_DEFAULT);
         }
-        validRegisterParams(registerVo);
-        PassportResult result = null;
         // 注册接口，密码必须做32位MD5
         if (!PassportUtil.isPasswordFormatCorrect(registerVo.getPassword())) {
             throw new PasswordFormatIncorrectException();
         }
-        return result;
+        /**
+         * 注册参数正则校验
+         */
+        validRegisterParams(registerVo);
+        /**
+         * 用户存在校验
+         */
+        if (RegisterType.MOBILE == registerVo.getRegisterType()) {
+            if (userService.isMobileExist(registerVo.getMobile())) {
+                throw new UserAlreadlyExistException();
+            }
+        } else if (RegisterType.EMAIL == registerVo.getRegisterType()) {
+            if (userService.isEmailExist(registerVo.getEmail())) {
+                throw new UserAlreadlyExistException();
+            }
+        }
+        User user = buildUser(registerVo);
+        userService.save(user);
+        Passport passport = buildPassport(user.getUserId(), registerVo.getPassword(), registerVo.getIp());
+        passport.setIsFirst(true);
+        passport.setUserId(user.getUserId());
+        passportService.save(passport);
+
+        // 调用生成SSID的方法
+        PassportResult passportResult = passportService.getSSID(registerVo.getChannelType(), passport);
+        long end = System.currentTimeMillis();
+        LOG.info("passport register success, userId={} use{}ms", passport.getUserId(), end - start);
+        return passportResult;
+    }
+
+    private Passport buildPassport(Integer userId, String md5Password, String ip) {
+        // salt为顺延值的key
+        String salt = tlasService.getRandomSalt(ip);
+        String hash = CommonUtil.generateHash(md5Password, tlasService.getSalt(salt));
+        Passport passport = new Passport();
+        passport.setUserId(userId);
+        passport.setSalt(salt);
+        passport.setHash(hash);
+        Date nowDate = new Date();
+        passport.setCreateAt(nowDate);
+        passport.setUpdateAt(nowDate);
+        passport.setStatus(PassportStatus.AVAILABLE);
+        return passport;
+    }
+
+    private User buildUser(RegisterVo registerVo) throws ZZKServiceException {
+        User user = new User();
+        user.setActive(1);
+        user.setChannel(registerVo.getChannelType());
+        user.setMobile(registerVo.getMobile());
+        user.setMail(registerVo.getEmail());
+        user.setActivation(Activation.NO);
+        user.setCreateAt(new Date());
+        user.setIntegral(0);
+        user.setLoginCount(1);
+        user.setPassword(registerVo.getPassword());
+        user.setRegisterIP(registerVo.getIp());
+        user.setUpdateAt(new Date());
+        user.setUserType(registerVo.getUserType());
+        return user;
     }
 
     /**
@@ -72,46 +145,39 @@ public class RegisterServiceImpl implements RegisterService {
      */
     private void validRegisterParams(RegisterVo registerVo) throws ZZKServiceException {
 
-        if (registerVo.getRegisterType() == null) {
-            throw new IllegalParamterException("register type is null");
+        if (registerVo.getChannelType() == null) {
+            throw new IllegalParamterException("register channelType is not null");
         }
-
-        switch (registerVo.getRegisterType()) {
-        case REGISTER:
-            if (registerVo.getUserType() == null) {
-                throw new IllegalParamterException("userType is null");
-            }
-            if (registerVo.getUserType() == UserType.CUSTOMER) {
-                if (!CommonUtils.isMobile(registerVo.getMobile())) {
-                    throw new MobileFormatIncorrectException();
-                }
-            }else if(registerVo.getUserType() == UserType.BUSINESS) {
-                if (!CommonUtils.isMobile(registerVo.getMobile())) {
-                    throw new MobileFormatIncorrectException();
-                }
-                if (!CommonUtils.isMobile(registerVo.getEmail())) {
-                    throw new EmailFormatIncorrectException();
-                }
-            }
-            break;
-        case LOGIN:
-            break;
-        case GUEST:
-            break;
-        default:
+        if (registerVo.getRegisterType() == null) {
+            throw new IllegalParamterException("registerType is null");
+        }
+        if (registerVo.getRegisterType() == RegisterType.MOBILE) {
             if (!CommonUtils.isMobile(registerVo.getMobile())) {
                 throw new MobileFormatIncorrectException();
             }
-        }
-
-        if (registerVo.getRegisterType() != null
-                && (LoginType.LOGIN == registerVo.getRegisterType() || LoginType.REGISTER == registerVo
-                        .getRegisterType()) && !CommonUtil.isPasswordFormatCorrect(registerVo.getPassword())) {
-            throw new PasswordFormatIncorrectException();
+        } else if (registerVo.getRegisterType() == RegisterType.EMAIL) {
+            if (!CommonUtils.isMobile(registerVo.getEmail())) {
+                throw new EmailFormatIncorrectException();
+            }
         }
         if (!CommonUtil.isIp(registerVo.getIp())) {
             throw new IPFormatIncorrectException();
         }
+    }
 
+    @Override
+    public Boolean isMobileExist(String mobile) throws MobileFormatIncorrectException {
+        if (!CommonUtils.isMobile(mobile)) {
+            throw new MobileFormatIncorrectException();
+        }
+        return userService.isMobileExist(mobile);
+    }
+
+    @Override
+    public Boolean isEmailExist(String email) throws EmailFormatIncorrectException {
+        if (!CommonUtils.isMobile(email)) {
+            throw new EmailFormatIncorrectException();
+        }
+        return userService.isEmailExist(email);
     }
 }

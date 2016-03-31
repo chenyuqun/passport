@@ -18,6 +18,7 @@ import com.zizaike.core.common.util.common.CommonUtils;
 import com.zizaike.core.framework.exception.ZZKServiceException;
 import com.zizaike.core.framework.exception.passport.EmailFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.MobileFormatIncorrectException;
+import com.zizaike.core.framework.exception.passport.UserNameFormatIncorrectException;
 import com.zizaike.entity.passport.User;
 import com.zizaike.passport.dao.UserDao;
 import com.zizaike.passport.service.UserService;
@@ -61,17 +62,41 @@ public class UserServiceImpl implements UserService {
         long start = System.currentTimeMillis();
         userDao.save(user);
         long end = System.currentTimeMillis();
-        LOG.info("save user, mobile={0}, userId={1}, use {2}ms",
+        LOG.info("save user, mobile={}, userId={}, use {}ms",
                 user.getMobile(), user.getUserId(), end - start);
     }
 
     @Override
-    public User findByMobile(String mobile) throws ZZKServiceException {
+    public User findByMobile(String mobile) throws MobileFormatIncorrectException {
           
         if( !CommonUtils.isMobile(mobile)){
             throw new MobileFormatIncorrectException();
         }
         return userDao.findByMobile(mobile);
+    }
+
+    @Override
+    public Boolean isUserNameExist(String userName) throws UserNameFormatIncorrectException{
+        if( !CommonUtils.isUserName(userName)){
+            throw new UserNameFormatIncorrectException();
+        }
+        return userDao.isUserNameExist(userName);
+    }
+
+    @Override
+    public User findByEmail(String email) throws EmailFormatIncorrectException {
+        if( !CommonUtils.isEmail(email)){
+            throw new EmailFormatIncorrectException();
+        }
+        return userDao.findByEmail(email);
+    }
+
+    @Override
+    public User findByUserName(String userName) throws UserNameFormatIncorrectException {
+        if( !CommonUtils.isUserName(userName)){
+            throw new UserNameFormatIncorrectException();
+        }
+        return userDao.findByUserName(userName);
     }
 }
   

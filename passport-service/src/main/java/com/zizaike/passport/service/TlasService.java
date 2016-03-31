@@ -27,7 +27,7 @@ public interface TlasService {
     /**
      * tlas表中默认的数据条数
      */
-    public static final int TLAS_COUNT = 1000;
+    public static final int TLAS_COUNT = 1024;
     /**
      * 
      * findAll:查询所有. <br/>  

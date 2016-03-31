@@ -31,6 +31,17 @@ public interface UserDao {
     public Boolean isEmailExist(String email);
     /**
      * 
+     * isUserNameExist:检查用户名是否存在. <br/>  
+     *  
+     * @author snow.zhang  
+     * @param userName
+     * @return  
+     * @since JDK 1.7
+     */
+    @Slave
+    public Boolean isUserNameExist(String userName);
+    /**
+     * 
      * save:保存用户. <br/>  
      *  
      * @author snow.zhang  
@@ -51,6 +62,30 @@ public interface UserDao {
      * @since JDK 1.7
      */
     @Slave
-    public User findByMobile(String mobile) throws ZZKServiceException;
+    public User findByMobile(String mobile) ;
+    /**
+     * 
+     * findByEmail:通过邮箱找用户. <br/>  
+     *  
+     * @author snow.zhang  
+     * @param email
+     * @return
+     * @throws ZZKServiceException  
+     * @since JDK 1.7
+     */
+    @Slave
+    public User findByEmail(String email);
+    /**
+     * 
+     * findByUserName:通过密码找用户. <br/>  
+     *  
+     * @author snow.zhang  
+     * @param userName
+     * @return
+     * @throws ZZKServiceException  
+     * @since JDK 1.7
+     */
+    @Slave
+    public User findByUserName(String userName);
 }
   

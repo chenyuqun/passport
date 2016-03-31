@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,7 @@ public class TlasServiceImpl implements TlasService {
     private static Map<String, String> saltMap = null;
     @Autowired
     private TlasDao tlasDao;
+    @PostConstruct
     private void initSaltMap() {
 
         // 判断saltMap是否存在
@@ -86,7 +89,7 @@ public class TlasServiceImpl implements TlasService {
     @Override
     public List<Tlas> findAll() {
 
-        initSaltMap();
+       // initSaltMap();
         List<Tlas> list = tlasDao.findAll();
         return list;
     }
@@ -98,7 +101,7 @@ public class TlasServiceImpl implements TlasService {
             return null;
         }
         // 先进行一次判断，防止saltMap有问题
-        initSaltMap();
+       // initSaltMap();
         return saltMap.get(saleRef);
     }
 
@@ -108,7 +111,7 @@ public class TlasServiceImpl implements TlasService {
         if (!CommonUtil.isIp(ip)) {
             return null;
         }
-        initSaltMap();
+       // initSaltMap();
 
         long subscript = IpUtil.ipToLong(ip);
         return (String) saltMap.keySet().toArray()[(int) (subscript % TLAS_COUNT)];

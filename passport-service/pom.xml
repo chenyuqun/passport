@@ -284,5 +284,14 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
+		<dependency>
+            <groupId>com.dianping.cat</groupId>
+            <artifactId>cat-core</artifactId>   
+      	</dependency>
+      	<dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>13.0.1</version>
+        </dependency>
 	</dependencies>
 </project>
