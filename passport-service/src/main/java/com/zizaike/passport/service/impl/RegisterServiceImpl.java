@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.zizaike.core.common.util.CommonUtil;
 import com.zizaike.core.common.util.common.CommonUtils;
+import com.zizaike.core.common.util.date.DateUtil;
 import com.zizaike.core.constants.Constant;
 import com.zizaike.core.framework.exception.IllegalParamterException;
 import com.zizaike.core.framework.exception.ZZKServiceException;
@@ -93,6 +94,8 @@ public class RegisterServiceImpl implements RegisterService {
         Passport passport = buildPassport(user.getUserId(), registerVo.getPassword(), registerVo.getIp());
         passport.setIsFirst(true);
         passport.setUserId(user.getUserId());
+        //一年后过期
+        passport.setExpireAt(DateUtil.addYear(new Date(), 1));
         passportService.save(passport);
 
         // 调用生成SSID的方法
@@ -156,7 +159,7 @@ public class RegisterServiceImpl implements RegisterService {
                 throw new MobileFormatIncorrectException();
             }
         } else if (registerVo.getRegisterType() == RegisterType.EMAIL) {
-            if (!CommonUtils.isMobile(registerVo.getEmail())) {
+            if (!CommonUtils.isEmail(registerVo.getEmail())) {
                 throw new EmailFormatIncorrectException();
             }
         }

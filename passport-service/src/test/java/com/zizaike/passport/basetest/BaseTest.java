@@ -1,8 +1,6 @@
 package com.zizaike.passport.basetest;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -19,9 +17,12 @@ import com.zizaike.entity.passport.Passport;
 import com.zizaike.entity.passport.User;
 import com.zizaike.entity.passport.domain.Activation;
 import com.zizaike.entity.passport.domain.ChannelType;
-import com.zizaike.entity.passport.domain.LoginType;
 import com.zizaike.entity.passport.domain.PassportStatus;
+import com.zizaike.entity.passport.domain.RegisterType;
 import com.zizaike.entity.passport.domain.UserType;
+import com.zizaike.entity.passport.domain.vo.RegisterVo;
+import com.zizaike.entity.passport.domain.vo.RegisterVo.RegisterVoBuilder;
+import com.zizaike.is.passport.RegisterService;
 import com.zizaike.passport.service.PassportService;
 import com.zizaike.passport.service.TlasService;
 import com.zizaike.passport.service.UserService;
@@ -39,8 +40,12 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
     protected UserService userService;
     @Autowired
     protected PassportService passportService;
+    @Autowired
+    protected RegisterService registerService;
+
     /**
      * 生成随机ID
+     * 
      * @return
      */
     public int generateId() {
@@ -50,18 +55,29 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
         }
         return id;
     }
+
+    public Passport registerTestPassport() throws ZZKServiceException {
+        String email = generateRandomMail();
+        String password = PASSWORD_UNENCRPTED;
+        String ip = IP_DEFAULT;
+        RegisterVo registerVo = new RegisterVoBuilder(email, null, password, ip).setChannelType(ChannelType.WEB)
+                .setRegisterType(RegisterType.EMAIL).build();
+        return registerService.registerPassport(registerVo, "").getPassport();
+    }
+
     /**
      * 创建邮箱注册的测试用户
+     * 
      * @return
      */
-    public Passport addTestPassportByMail() throws ZZKServiceException{
+    public Passport addTestPassportByMail() throws ZZKServiceException {
         User user = addTestUserByMail();
         Passport passport = createPassport();
         passport.setUserId(user.getUserId());
         return passport;
     }
-    
-    public User addTestUserByMail() throws ZZKServiceException{
+
+    public User addTestUserByMail() throws ZZKServiceException {
         User user = createUser();
         Passport passport = createPassport();
         userService.save(user);
@@ -69,8 +85,10 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
         passportService.save(passport);
         return user;
     }
+
     /**
      * 创建默认的passport对象
+     * 
      * @param id
      * @return
      */
@@ -79,10 +97,11 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
         String password = PASSWORD_UNENCRPTED;
         passport.setSalt(tlasService.getRandomSalt(IP_DEFAULT));
         passport.setStatus(PassportStatus.AVAILABLE);
-        fillPassport(passport, password ,tlasService.getSalt(passport.getSalt()));
+        fillPassport(passport, password, tlasService.getSalt(passport.getSalt()));
         return passport;
     }
-    private void fillPassport(Passport passport ,String password, String salt) {
+
+    private void fillPassport(Passport passport, String password, String salt) {
 
         String hash = CommonUtil.generateHash(password, salt);
         passport.setHash(hash);
@@ -126,19 +145,19 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
         return phones[phoneStartIndex] + generateRandomInt(9);
 
     }
-    public String generateRandomInt(int length){
+
+    public String generateRandomInt(int length) {
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
-        for(int i=0;i<length;i++){
+        for (int i = 0; i < length; i++) {
             sb.append(random.nextInt(9));
         }
-        
+
         return sb.toString();
     }
-    
 
     static String[] phones = { "13", "14", "15", "18" };
-    
+
     /**
      * @param user
      * @param mail
@@ -160,5 +179,5 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
         user.setUpdateAt(new Date());
         user.setUserType(UserType.BUSINESS);
     }
-    
+
 }

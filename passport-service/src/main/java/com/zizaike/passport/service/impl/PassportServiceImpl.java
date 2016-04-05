@@ -96,8 +96,6 @@ public class PassportServiceImpl implements PassportService {
         
         passport.setHash(null);
         passport.setSalt(null);
-        //设置状态
-        passport.setStatus(passport.getStatus());
         
         ssidRedisService.setPassport(channelType,SSID, passport, Constant.SSID_EXP);
         

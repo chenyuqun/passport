@@ -89,6 +89,16 @@ public interface UserService {
      * @since JDK 1.7
      */
     public User findByUserName(String userName) throws UserNameFormatIncorrectException;
+    /**
+     * 
+     * findByUserId:用户id查询. <br/>  
+     *  
+     * @author snow.zhang  
+     * @param userId
+     * @return  
+     * @since JDK 1.7
+     */
+    public User findByUserId(Integer userId);
     
 }
   

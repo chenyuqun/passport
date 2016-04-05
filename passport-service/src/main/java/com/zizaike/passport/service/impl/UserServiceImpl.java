@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zizaike.core.common.util.common.CommonUtils;
-import com.zizaike.core.framework.exception.ZZKServiceException;
 import com.zizaike.core.framework.exception.passport.EmailFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.MobileFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.UserNameFormatIncorrectException;
@@ -97,6 +96,15 @@ public class UserServiceImpl implements UserService {
             throw new UserNameFormatIncorrectException();
         }
         return userDao.findByUserName(userName);
+    }
+
+    @Override
+    public User findByUserId(Integer userId) {
+          
+        if( userId==null || userId<=0){
+            return null;
+        } 
+        return userDao.findByUserId(userId);
     }
 }
   

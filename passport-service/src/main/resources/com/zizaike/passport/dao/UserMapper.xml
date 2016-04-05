@@ -341,4 +341,12 @@
 		where  active = 1
 		 and user_name = #{userName,jdbcType=VARCHAR}
 	</select>
+	<select id="selectByUserId" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from t_user
+		where  active = 1
+		 and id = #{userId,jdbcType=INTEGER}
+	</select>
 </mapper>

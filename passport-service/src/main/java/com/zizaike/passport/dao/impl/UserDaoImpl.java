@@ -81,4 +81,11 @@ public class UserDaoImpl extends GenericMyIbatisDao<User, Integer> implements Us
         return true;
     }
 
+    @Override
+    public User findByUserId(Integer userId) {
+          
+        User user = this.getSqlSession().selectOne(NAMESPACE + "selectByUserId", userId);
+        return user;
+    }
+
 }

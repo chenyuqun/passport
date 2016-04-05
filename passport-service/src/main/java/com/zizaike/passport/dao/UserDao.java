@@ -87,5 +87,16 @@ public interface UserDao {
      */
     @Slave
     public User findByUserName(String userName);
+    /**
+     * 
+     * findByUserId:通过userId查用户. <br/>  
+     *  
+     * @author snow.zhang  
+     * @param userId
+     * @return  
+     * @since JDK 1.7
+     */
+    @Slave
+    public User findByUserId(Integer userId);
 }
   

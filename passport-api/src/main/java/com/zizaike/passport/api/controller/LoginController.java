@@ -9,6 +9,7 @@
   
 package com.zizaike.passport.api.controller;  
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.zizaike.core.bean.ResponseResult;
 import com.zizaike.core.framework.exception.ZZKServiceException;
 import com.zizaike.entity.passport.domain.ChannelType;
+import com.zizaike.entity.passport.domain.LoginType;
+import com.zizaike.entity.passport.domain.vo.LoginVo.LoginVoBuilder;
+import com.zizaike.is.passport.LoginService;
 import com.zizaike.passport.api.BaseAjaxController;
 
 /**  
@@ -31,9 +35,11 @@ import com.zizaike.passport.api.BaseAjaxController;
 @Controller
 @RequestMapping("/passport/login")
 public class LoginController  extends BaseAjaxController {
+    @Autowired
+    private LoginService loginService;
     /**
      * 
-     * login:登陆. <br/>  
+     * login:邮箱登陆. <br/>  
      *  
      * @author snow.zhang  
      * @param email
@@ -46,8 +52,55 @@ public class LoginController  extends BaseAjaxController {
      */
     @RequestMapping(value = "emailLogin", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseResult login(String email,String password,String ip,ChannelType channelType) throws ZZKServiceException {
+    public ResponseResult emailLogin(String email,String password,String ip,ChannelType channelType) throws ZZKServiceException {
         ResponseResult result = new ResponseResult();
+        LoginVoBuilder loginVoBuilder = new LoginVoBuilder(email, null, null, password, ip);
+        loginVoBuilder.setChannelType(channelType).setLoginType(LoginType.EMAIL_LOGIN);
+        result.setInfo(loginService.login(loginVoBuilder.build()));
+        return result;
+    }
+    /**
+     * 
+     * mobileLogin:手机登陆. <br/>  
+     *  
+     * @author snow.zhang  
+     * @param mobile
+     * @param password
+     * @param ip
+     * @param channelType
+     * @return
+     * @throws ZZKServiceException  
+     * @since JDK 1.7
+     */
+    @RequestMapping(value = "mobileLogin", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult mobileLogin(String mobile,String password,String ip,ChannelType channelType) throws ZZKServiceException {
+        ResponseResult result = new ResponseResult();
+        LoginVoBuilder loginVoBuilder = new LoginVoBuilder(null, mobile, null, password, ip);
+        loginVoBuilder.setChannelType(channelType).setLoginType(LoginType.MOBILE_LOGIN);
+        result.setInfo(loginService.login(loginVoBuilder.build()));
+        return result;
+    }
+    /**
+     * 
+     * userNameLogin:手机登陆. <br/>  
+     *  
+     * @author snow.zhang  
+     * @param userName
+     * @param password
+     * @param ip
+     * @param channelType
+     * @return
+     * @throws ZZKServiceException  
+     * @since JDK 1.7
+     */
+    @RequestMapping(value = "userNameLogin", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult userNameLogin(String userName,String password,String ip,ChannelType channelType) throws ZZKServiceException {
+        ResponseResult result = new ResponseResult();
+        LoginVoBuilder loginVoBuilder = new LoginVoBuilder(null, null, userName, password, ip);
+        loginVoBuilder.setChannelType(channelType).setLoginType(LoginType.USER_NAME_LOGIN);
+        result.setInfo(loginService.login(loginVoBuilder.build()));
         return result;
     }
 }
