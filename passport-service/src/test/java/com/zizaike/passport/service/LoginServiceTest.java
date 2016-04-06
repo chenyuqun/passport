@@ -16,7 +16,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.zizaike.core.common.util.CommonUtil;
-import com.zizaike.core.common.util.date.SuperDate;
 import com.zizaike.core.framework.exception.ZZKServiceException;
 import com.zizaike.core.framework.exception.passport.PasswordFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.PasswordIncorrectException;
@@ -73,7 +72,7 @@ public class LoginServiceTest extends BaseTest{
     public void testLoginIncorrectPassword() throws ZZKServiceException {
         Passport passport = registerTestPassport();
         User user = userService.findByUserId(passport.getUserId());
-        LoginVoBuilder loginVoBuilder = new LoginVoBuilder(user.getMail(), null, null, CommonUtil.generatePassword(null, "LUCKY_DAY"), IP_DEFAULT);
+        LoginVoBuilder loginVoBuilder = new LoginVoBuilder(user.getEmail(), null, null, CommonUtil.generatePassword(null, "LUCKY_DAY"), IP_DEFAULT);
         loginVoBuilder.setChannelType(ChannelType.APP).setLoginType(LoginType.EMAIL_LOGIN);
         loginService.login(loginVoBuilder.build());
     }
@@ -81,7 +80,7 @@ public class LoginServiceTest extends BaseTest{
     public void testLoginSuccess() throws ZZKServiceException {
         Passport passport = registerTestPassport();
         User user = userService.findByUserId(passport.getUserId());
-        LoginVoBuilder loginVoBuilder = new LoginVoBuilder(user.getMail(), null, null, PASSWORD_UNENCRPTED, IP_DEFAULT);
+        LoginVoBuilder loginVoBuilder = new LoginVoBuilder(user.getEmail(), null, null, PASSWORD_UNENCRPTED, IP_DEFAULT);
         loginVoBuilder.setChannelType(ChannelType.APP).setLoginType(LoginType.EMAIL_LOGIN);
         PassportResult result = loginService.login(loginVoBuilder.build());
         

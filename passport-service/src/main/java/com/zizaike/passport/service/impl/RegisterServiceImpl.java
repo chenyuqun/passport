@@ -122,10 +122,11 @@ public class RegisterServiceImpl implements RegisterService {
 
     private User buildUser(RegisterVo registerVo) throws ZZKServiceException {
         User user = new User();
+        user.setUserName(registerVo.getUsername());
         user.setActive(1);
         user.setChannel(registerVo.getChannelType());
         user.setMobile(registerVo.getMobile());
-        user.setMail(registerVo.getEmail());
+        user.setEmail(registerVo.getEmail());
         user.setActivation(Activation.NO);
         user.setCreateAt(new Date());
         user.setIntegral(0);

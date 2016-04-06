@@ -164,9 +164,9 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
      * @param mobile
      * @param username
      */
-    private void fillUser(User user, String mail, String mobile) {
+    private void fillUser(User user, String email, String mobile) {
         user.setNickName(Constant.DEFAULT_NICKNAME);
-        user.setMail(mail);
+        user.setEmail(email);
         user.setMobile(mobile);
         user.setPassword(PASSWORD_UNENCRPTED);
         user.setRegisterIP(IP_DEFAULT);

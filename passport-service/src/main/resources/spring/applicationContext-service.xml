@@ -20,4 +20,7 @@
 			http://www.springframework.org/schema/task 
 			http://www.springframework.org/schema/task/spring-task-4.0.xsd"
 	default-lazy-init="true">
+	 <!-- Spring 监听器异步执行 -->
+    <bean id="applicationEventMulticaster"
+        class="com.zizaike.passport.util.AsyncApplicationEventMulticaster" />
 </beans>

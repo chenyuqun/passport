@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import com.zizaike.core.common.util.CommonUtil;
 import com.zizaike.core.common.util.string.SuperString;
 import com.zizaike.core.constants.Constant;
+import com.zizaike.core.framework.event.BusinessOperationCompletedEvent;
+import com.zizaike.core.framework.event.BusinessOperationFailedEvent;
 import com.zizaike.core.framework.exception.IllegalParamterException;
 import com.zizaike.core.framework.exception.ZZKServiceException;
 import com.zizaike.core.framework.exception.passport.PasswordFormatIncorrectException;
@@ -33,6 +35,9 @@ import com.zizaike.entity.passport.domain.LoginType;
 import com.zizaike.entity.passport.domain.vo.LoginVo;
 import com.zizaike.is.passport.LoginService;
 import com.zizaike.is.redis.passport.SSIDRedisService;
+import com.zizaike.passport.bo.EventPublishService;
+import com.zizaike.passport.domain.event.LoginEventSource;
+import com.zizaike.passport.domain.event.PassportBusinessOperation;
 import com.zizaike.passport.service.PassportService;
 import com.zizaike.passport.service.TlasService;
 import com.zizaike.passport.service.UserService;
@@ -58,7 +63,8 @@ public class LoginServiceImpl implements LoginService {
     private PassportService passportService;
     @Autowired
     private SSIDRedisService ssidRedisService;
-
+    @Autowired
+    private EventPublishService eventPublishService;
 
     @Override
     public PassportResult login(LoginVo loginVo) throws ZZKServiceException {
@@ -75,39 +81,56 @@ public class LoginServiceImpl implements LoginService {
                     Constant.IP_DEFAULT);
             loginVo.setIp(Constant.IP_DEFAULT);
         }
-        if (!CommonUtil.isPasswordFormatCorrect(loginVo.getPassword())) {
-            throw new PasswordFormatIncorrectException();
-        }
-        User user = null;
-        if (loginVo.getLoginType() == LoginType.EMAIL_LOGIN) {
-            user = userService.findByEmail(loginVo.getEmail());
-        } else if (loginVo.getLoginType() == LoginType.MOBILE_LOGIN) {
-            user = userService.findByMobile(loginVo.getMobile());
-        } else if (loginVo.getLoginType() == LoginType.USER_NAME_LOGIN) {
-            user = userService.findByUserName(loginVo.getUserName());
-        }
-        if (user == null) {
-            throw new UserNotExistException();
-        }
-        Passport passport = passportService.findPassport(user.getUserId());
-        passport.setLoginType(loginVo.getLoginType());
-        passport.setIsFirst(false);
-        String hash = CommonUtil.generateHash(loginVo.getPassword(), tlasService.getSalt(passport.getSalt()));
-        if (StringUtils.isNotEmpty(passport.getHash()) && !passport.getHash().equals(hash)) {
-            LOG.info("login failed incorrect password, userId={} ", passport.getUserId());
-            throw new PasswordIncorrectException();
-        }
-        // 保护性copy，防止外部接口直接使用原对象
-        Passport ssidPassport = new Passport();
+        PassportResult passportResult = null;
+        LoginEventSource loginEventSource = LoginEventSource.newInstance(loginVo);
         try {
-            BeanUtils.copyProperties(ssidPassport, passport);
-        } catch (Exception e) {
-            LOG.error("copy passport is error", e);
+
+            if (!CommonUtil.isPasswordFormatCorrect(loginVo.getPassword())) {
+                throw new PasswordFormatIncorrectException();
+            }
+            User user = null;
+            if (loginVo.getLoginType() == LoginType.EMAIL_LOGIN) {
+                user = userService.findByEmail(loginVo.getEmail());
+            } else if (loginVo.getLoginType() == LoginType.MOBILE_LOGIN) {
+                user = userService.findByMobile(loginVo.getMobile());
+            } else if (loginVo.getLoginType() == LoginType.USER_NAME_LOGIN) {
+                user = userService.findByUserName(loginVo.getUserName());
+            }
+            if (user == null) {
+                throw new UserNotExistException();
+            }
+            Passport passport = passportService.findPassport(user.getUserId());
+            passport.setLoginType(loginVo.getLoginType());
+            passport.setIsFirst(false);
+            String hash = CommonUtil.generateHash(loginVo.getPassword(), tlasService.getSalt(passport.getSalt()));
+            if (StringUtils.isNotEmpty(passport.getHash()) && !passport.getHash().equals(hash)) {
+                LOG.info("login failed incorrect password, userId={} ", passport.getUserId());
+                throw new PasswordIncorrectException();
+            }
+            // 保护性copy，防止外部接口直接使用原对象
+            Passport ssidPassport = new Passport();
+            try {
+                BeanUtils.copyProperties(ssidPassport, passport);
+            } catch (Exception e) {
+                LOG.error("copy passport is error", e);
+            }
+
+            // 调用生成SSID的方法
+            passportResult = passportService.getSSID(loginVo.getChannelType(), ssidPassport);
+            LOG.info("passport login success, userId={}, use {}ms", passportResult.getPassport().getUserId(),
+                    System.currentTimeMillis() - start);
+            loginEventSource.setUserId(passportResult.getPassport().getUserId());
+            BusinessOperationCompletedEvent<LoginEventSource> completedEvent = new BusinessOperationCompletedEvent<LoginEventSource>(
+                    PassportBusinessOperation.LOGIN, loginEventSource);
+            eventPublishService.publishEvent(completedEvent);
+            LOG.info("passport login success, userId={}, use {}ms", passportResult.getPassport().getUserId(),
+                    System.currentTimeMillis() - start);
+        } catch (ZZKServiceException zz) {
+            BusinessOperationFailedEvent<LoginEventSource> failedEvent = new BusinessOperationFailedEvent<LoginEventSource>(
+                    PassportBusinessOperation.LOGIN, loginEventSource, zz);
+            eventPublishService.publishEvent(failedEvent);
+            throw zz;
         }
-        // 调用生成SSID的方法
-        PassportResult passportResult = passportService.getSSID(loginVo.getChannelType(), ssidPassport);
-        LOG.info("passport login success, userId={}, use {}ms", passportResult.getPassport().getUserId(),
-                System.currentTimeMillis() - start);
         return passportResult;
     }
 
@@ -117,14 +140,13 @@ public class LoginServiceImpl implements LoginService {
             throw new IllegalParamterException("SSID is error");
         }
         long start = System.currentTimeMillis();
-        Passport passport = ssidRedisService.getPassport(channelType,SSID);
+        Passport passport = ssidRedisService.getPassport(channelType, SSID);
         if (passport == null) {
-            LOG.info("get passport failed,SSID={}",SSID);
+            LOG.info("get passport failed,SSID={}", SSID);
             throw new SSIDAuthenticationException();
         }
-        LOG.info("get passport success, SSID={}, userId={}, use {}ms",
-                SSID, (passport == null ? null : passport.getUserId()),
-                System.currentTimeMillis() - start);
+        LOG.info("get passport success, SSID={}, userId={}, use {}ms", SSID,
+                (passport == null ? null : passport.getUserId()), System.currentTimeMillis() - start);
         return passport;
     }
 
