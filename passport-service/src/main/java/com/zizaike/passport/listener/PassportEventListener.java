@@ -34,9 +34,9 @@ public class PassportEventListener implements ApplicationListener<PassportApplic
     @Autowired
     private MQService bindVerifyInfoMQServiceImpl;**/
     @Autowired
-    private MQService loginMQServiceImpl;
+    private MQService loginMQService;
     @Autowired
-    private MQService registerMQServiceImpl;
+    private MQService registerMQService;
 
 
     @Override
@@ -50,7 +50,7 @@ public class PassportEventListener implements ApplicationListener<PassportApplic
                 mqService.sendMsg(event);
             } catch (ZZKServiceException e) {
                 e.printStackTrace();  
-                
+                logger.error("onApplicationEvent error {}",e);
             }
         }
     }
@@ -68,10 +68,10 @@ public class PassportEventListener implements ApplicationListener<PassportApplic
         MQService mqService = null;
         switch ((PassportBusinessOperation) operation) {
             case LOGIN:
-                mqService = loginMQServiceImpl;
+                mqService = loginMQService;
                 break;
                 case REGISTER:
-                mqService = registerMQServiceImpl;
+                mqService = registerMQService;
                 break;
              /** case THIRD_LOGIN:
                 mqService = thirdLoginMQServiceImpl;

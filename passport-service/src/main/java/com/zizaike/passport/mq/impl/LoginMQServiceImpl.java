@@ -26,7 +26,7 @@ import com.zizaike.passport.service.LoginLogService;
  * @version   
  * @since JDK 1.7
  */
-@Service
+@Service("loginMQService")
 public class LoginMQServiceImpl implements MQService {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoginMQServiceImpl.class);

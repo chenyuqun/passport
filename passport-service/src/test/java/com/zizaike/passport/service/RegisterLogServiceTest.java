@@ -34,7 +34,7 @@ import com.zizaike.passport.entity.RegisterLog;
  * @since JDK 1.7
  */
 @Transactional
-@TransactionConfiguration(defaultRollback = true)
+@TransactionConfiguration(defaultRollback = false)
 public class RegisterLogServiceTest extends BaseTest{
     @Autowired
     private  RegisterLogService registerLogService;
