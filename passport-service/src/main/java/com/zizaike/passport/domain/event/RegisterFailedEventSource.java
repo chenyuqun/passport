@@ -5,7 +5,16 @@ import java.util.Date;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.zizaike.core.framework.exception.ZZKServiceException;
 import com.zizaike.entity.passport.domain.ChannelType;
-
+/**
+ * 
+ * ClassName: RegisterFailedEventSource <br/>  
+ * Function: 注册失败. <br/>  
+ * date: 2016年4月6日 下午5:38:31 <br/>  
+ *  
+ * @author snow.zhang  
+ * @version   
+ * @since JDK 1.7
+ */
 public class RegisterFailedEventSource{
 
     /***错误吗***/
@@ -30,20 +39,6 @@ public class RegisterFailedEventSource{
         return errorCode;
     }
 
-    public String getExtend() {
-        if(registerEventSource == null){
-            return null;
-        }
-        return registerEventSource.getExtend();
-    }
-
-    public String getInviter() {
-        if(registerEventSource == null){
-            return null;
-        }
-        return registerEventSource.getInviter();
-    }
-
     public String getIp() {
         if(registerEventSource == null){
             return null;
@@ -66,7 +61,6 @@ public class RegisterFailedEventSource{
         return registerEventSource.getChannel();
     }
 
-
     public Integer getUserId() {
         if(registerEventSource == null){
             return null;
@@ -74,7 +68,10 @@ public class RegisterFailedEventSource{
         return registerEventSource.getUserId();
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return "RegisterFailedEventSource [errorCode=" + errorCode + ", reason=" + reason + ", registerEventSource="
+                + registerEventSource + "]";
+    }
+    
 }

@@ -12,13 +12,22 @@ import com.zizaike.passport.domain.event.PassportApplicationEvent;
 import com.zizaike.passport.domain.event.PassportBusinessOperation;
 import com.zizaike.passport.mq.MQService;
 
+/**
+ * 
+ * ClassName: PassportEventListener <br/>  
+ * Function: passport行为监听器. <br/>  
+ * date: 2016年4月6日 下午7:17:15 <br/>  
+ *  
+ * @author snow.zhang  
+ * @version   
+ * @since JDK 1.7
+ */
 @Component
 public class PassportEventListener implements ApplicationListener<PassportApplicationEvent> {
 
     private static final Logger logger = LoggerFactory.getLogger(PassportEventListener.class);
-    /** @Autowired
-    private MQService registerMQServiceImpl;
-    @Autowired
+     
+     /** @Autowired
     private MQService thirdLoginMQServiceImpl;
     @Autowired
     private MQService updatePasswordMQServiceImpl;
@@ -26,6 +35,8 @@ public class PassportEventListener implements ApplicationListener<PassportApplic
     private MQService bindVerifyInfoMQServiceImpl;**/
     @Autowired
     private MQService loginMQServiceImpl;
+    @Autowired
+    private MQService registerMQServiceImpl;
 
 
     @Override
@@ -59,10 +70,10 @@ public class PassportEventListener implements ApplicationListener<PassportApplic
             case LOGIN:
                 mqService = loginMQServiceImpl;
                 break;
-                /**case REGISTER:
+                case REGISTER:
                 mqService = registerMQServiceImpl;
                 break;
-             case THIRD_LOGIN:
+             /** case THIRD_LOGIN:
                 mqService = thirdLoginMQServiceImpl;
                 break;
             case THIRD_BIND:

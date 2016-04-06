@@ -54,9 +54,23 @@ public class LoginLogServiceTest extends BaseTest{
         loginLog.setUserId(1234567);
         loginLog.setChannel(ChannelType.APP);
         loginLog.setIp(IP_DEFAULT);
+        loginLog.setEmail(generateRandomMail());
         loginLog.setLoginAt(new Date());
         loginLog.setLoginType(LoginType.EMAIL_LOGIN);
         loginLogService.success(loginLog);
+    }
+    @Test()
+    public void testLoginLogFailure() throws ZZKServiceException {
+        LoginLog loginLog = new LoginLog();
+        loginLog.setUserId(1234567);
+        loginLog.setChannel(ChannelType.APP);
+        loginLog.setIp(IP_DEFAULT);
+        loginLog.setEmail(generateRandomMail());
+        loginLog.setLoginAt(new Date());
+        loginLog.setLoginType(LoginType.EMAIL_LOGIN);
+        loginLog.setReason("错误");
+        loginLog.setErrorCode("出错");
+        loginLogService.failure(loginLog);
     }
   
     

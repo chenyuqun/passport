@@ -84,4 +84,11 @@ public class LoginFailedEventSouce implements Serializable{
         }
         return loginEventSource.getLoginAt();
     }
+
+    @Override
+    public String toString() {
+        return "LoginFailedEventSouce [errorCode=" + errorCode + ", reason=" + reason + ", loginEventSource="
+                + loginEventSource + "]";
+    }
+    
 }

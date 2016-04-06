@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zizaike.passport.dao.RegisterLogMapper" >
+  <resultMap id="BaseResultMap" type="com.zizaike.passport.entity.RegisterLog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="channel" property="channel" typeHandler="com.zizaike.passport.dao.handler.ChannelTypeHandler" />
+    <result column="register_type" property="registerType" typeHandler="com.zizaike.passport.dao.handler.RegisterTypeHandler" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="status" property="status" typeHandler="com.zizaike.passport.dao.handler.OperateStatusHandler" />
+    <result column="error_code" property="errorCode" jdbcType="VARCHAR" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="register_at" property="registerAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, user_name, nick_name, email, mobile, channel, register_type, ip, password, 
+    status, error_code, reason, register_at
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_register_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_register_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zizaike.passport.entity.RegisterLog" >
+    insert into t_register_log (id, user_id, user_name, 
+      nick_name, email, mobile, 
+      channel, register_type, ip, 
+      password, status, error_code, 
+      reason, register_at)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, 
+      #{nickName,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
+       #{channel,javaType=com.zizaike.entity.passport.domain.ChannelType,typeHandler=com.zizaike.passport.dao.handler.ChannelTypeHandler},
+      #{registerType,javaType=com.zizaike.entity.passport.domain.RegisterType,typeHandler=com.zizaike.passport.dao.handler.RegisterTypeHandler},
+		#{ip,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+		#{status,javaType=com.zizaike.entity.passport.domain.OperateStatus,typeHandler=com.zizaike.passport.dao.handler.OperateStatusHandler},
+       #{errorCode,jdbcType=VARCHAR}, 
+      #{reason,jdbcType=VARCHAR}, #{registerAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zizaike.passport.entity.RegisterLog" >
+    insert into t_register_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="nickName != null" >
+        nick_name,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="channel != null" >
+        channel,
+      </if>
+      <if test="registerType != null" >
+        register_type,
+      </if>
+      <if test="ip != null" >
+        ip,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="errorCode != null" >
+        error_code,
+      </if>
+      <if test="reason != null" >
+        reason,
+      </if>
+      <if test="registerAt != null" >
+        register_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null" >
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null" >
+ 		#{channel,javaType=com.zizaike.entity.passport.domain.ChannelType,typeHandler=com.zizaike.passport.dao.handler.ChannelTypeHandler},
+      </if>
+      <if test="registerType != null" >
+      #{registerType,javaType=com.zizaike.entity.passport.domain.RegisterType,typeHandler=com.zizaike.passport.dao.handler.RegisterTypeHandler},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+		#{status,javaType=com.zizaike.entity.passport.domain.OperateStatus,typeHandler=com.zizaike.passport.dao.handler.OperateStatusHandler},      
+	  </if>
+      <if test="errorCode != null" >
+        #{errorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="registerAt != null" >
+        #{registerAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zizaike.passport.entity.RegisterLog" >
+    update t_register_log
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null" >
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+       <if test="channel != null" >
+ 		#{channel,javaType=com.zizaike.entity.passport.domain.ChannelType,typeHandler=com.zizaike.passport.dao.handler.ChannelTypeHandler},
+      </if>
+      <if test="registerType != null" >
+      #{registerType,javaType=com.zizaike.entity.passport.domain.RegisterType,typeHandler=com.zizaike.passport.dao.handler.RegisterTypeHandler},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+		#{status,javaType=com.zizaike.entity.passport.domain.OperateStatus,typeHandler=com.zizaike.passport.dao.handler.OperateStatusHandler},      
+	  </if>
+      <if test="errorCode != null" >
+        error_code = #{errorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="registerAt != null" >
+        register_at = #{registerAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zizaike.passport.entity.RegisterLog" >
+    update t_register_log
+    set user_id = #{userId,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      channel =  #{channel,javaType=com.zizaike.entity.passport.domain.ChannelType,typeHandler=com.zizaike.passport.dao.handler.ChannelTypeHandler},
+      register_type = #{registerType,javaType=com.zizaike.entity.passport.domain.RegisterType,typeHandler=com.zizaike.passport.dao.handler.RegisterTypeHandler},
+      ip = #{ip,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      status = #{status,javaType=com.zizaike.entity.passport.domain.OperateStatus,typeHandler=com.zizaike.passport.dao.handler.OperateStatusHandler},
+      error_code = #{errorCode,jdbcType=VARCHAR},
+      reason = #{reason,jdbcType=VARCHAR},
+      register_at = #{registerAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <insert id="save" parameterType="com.zizaike.passport.entity.RegisterLog" >
+    insert into t_register_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="nickName != null" >
+        nick_name,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="channel != null" >
+        channel,
+      </if>
+      <if test="registerType != null" >
+        register_type,
+      </if>
+      <if test="ip != null" >
+        ip,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="errorCode != null" >
+        error_code,
+      </if>
+      <if test="reason != null" >
+        reason,
+      </if>
+      <if test="registerAt != null" >
+        register_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null" >
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null" >
+ 		#{channel,javaType=com.zizaike.entity.passport.domain.ChannelType,typeHandler=com.zizaike.passport.dao.handler.ChannelTypeHandler},
+      </if>
+      <if test="registerType != null" >
+      #{registerType,javaType=com.zizaike.entity.passport.domain.RegisterType,typeHandler=com.zizaike.passport.dao.handler.RegisterTypeHandler},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+		#{status,javaType=com.zizaike.entity.passport.domain.OperateStatus,typeHandler=com.zizaike.passport.dao.handler.OperateStatusHandler},      
+	  </if>
+      <if test="errorCode != null" >
+        #{errorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="registerAt != null" >
+        #{registerAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

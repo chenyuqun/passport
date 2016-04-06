@@ -4,8 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.zizaike.entity.passport.User;
 import com.zizaike.entity.passport.domain.ChannelType;
+import com.zizaike.entity.passport.domain.RegisterType;
+import com.zizaike.entity.passport.domain.vo.RegisterVo;
 
 /**
  * 
@@ -22,82 +23,99 @@ public class RegisterEventSource implements Serializable {
     private static final long serialVersionUID = -5722972179519675246L;
     /*** 注册IP ***/
     private String ip;
-   /**
-    * 注册时间
-    */
-    private Date registerAt;
+    /**
+     * 注册时间
+     */
+    private Date registerAt = new Date();
 
     /*** 注册来源 ***/
     private ChannelType channel;
 
     private Integer userId;
 
-    /*** 注册邀请人 ***/
-    private String inviter;
+    private RegisterType registerType;
 
-    /** 额外业务参数信息---> json格式 */
-    private String extend;
+    private String userName;
 
-    public static RegisterEventSource newInstance(User user) {
+    private String mobile;
+    private String email;
+    /**
+     * MD5密码
+     */
+    private String password;
+
+    private String nickName;
+
+    public static RegisterEventSource newInstance(RegisterVo registerVo) {
         RegisterEventSource instance = new RegisterEventSource();
-        instance.ip = user.getRegisterIP();
-        instance.channel = user.getChannel();
+        instance.ip = registerVo.getIp();
+        instance.channel = registerVo.getChannelType();
         
         return instance;
-    }
-
-    public String getExtend() {
-        return extend;
-    }
-
-    public void setExtend(String extend) {
-        this.extend = extend;
-    }
-
-    public String getInviter() {
-        return inviter;
-    }
-
-    public void setInviter(String inviter) {
-        this.inviter = inviter;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
     }
 
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     public Date getRegisterAt() {
         return registerAt;
     }
-
-    public void setRegisterAt(Date registerAt) {
+    public  void setRegisterAt(Date registerAt) {
         this.registerAt = registerAt;
     }
+
 
     public Integer getUserId() {
         return userId;
     }
-
     public void setUserId(Integer userId) {
-        this.userId = userId;
+         this.userId = userId;
     }
+
+
+    public String getIp() {
+        return ip;
+    }
+
 
     public ChannelType getChannel() {
         return channel;
     }
 
-    public void setChannelType(ChannelType channel) {
-        this.channel = channel;
+
+    public RegisterType getRegisterType() {
+        return registerType;
     }
+
+
+    public String getUserName() {
+        return userName;
+    }
+
+
+    public String getMobile() {
+        return mobile;
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+
+    public String getPassword() {
+        return password;
+    }
+
+
+    public String getNickName() {
+        return nickName;
+    }
+
 
     @Override
     public String toString() {
-        return "RegisterEventSource{" + "ip='" + ip + '\'' + ", registerAt=" + registerAt + '\'' + ", userId=" + userId
-                + '\'' + ", inviter='" + inviter + '\'' + ", extend='" + extend + '\'' + '}';
+        return "RegisterEventSource [ip=" + ip + ", registerAt=" + registerAt + ", channel=" + channel + ", userId="
+                + userId + ", registerType=" + registerType + ", userName=" + userName + ", mobile=" + mobile
+                + ", email=" + email + ", password=" + password + ", nickName=" + nickName + "]";
     }
+
 }

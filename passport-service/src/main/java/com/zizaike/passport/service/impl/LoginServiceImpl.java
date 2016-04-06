@@ -9,8 +9,6 @@
 
 package com.zizaike.passport.service.impl;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,24 +21,17 @@ import com.zizaike.core.framework.event.BusinessOperationCompletedEvent;
 import com.zizaike.core.framework.event.BusinessOperationFailedEvent;
 import com.zizaike.core.framework.exception.IllegalParamterException;
 import com.zizaike.core.framework.exception.ZZKServiceException;
-import com.zizaike.core.framework.exception.passport.PasswordFormatIncorrectException;
-import com.zizaike.core.framework.exception.passport.PasswordIncorrectException;
 import com.zizaike.core.framework.exception.passport.SSIDAuthenticationException;
-import com.zizaike.core.framework.exception.passport.UserNotExistException;
 import com.zizaike.entity.passport.Passport;
 import com.zizaike.entity.passport.PassportResult;
-import com.zizaike.entity.passport.User;
 import com.zizaike.entity.passport.domain.ChannelType;
-import com.zizaike.entity.passport.domain.LoginType;
 import com.zizaike.entity.passport.domain.vo.LoginVo;
 import com.zizaike.is.passport.LoginService;
 import com.zizaike.is.redis.passport.SSIDRedisService;
 import com.zizaike.passport.bo.EventPublishService;
 import com.zizaike.passport.domain.event.LoginEventSource;
 import com.zizaike.passport.domain.event.PassportBusinessOperation;
-import com.zizaike.passport.service.PassportService;
-import com.zizaike.passport.service.TlasService;
-import com.zizaike.passport.service.UserService;
+import com.zizaike.passport.service.CommonService;
 
 /**
  * ClassName:PassportServiceImpl <br/>
@@ -56,11 +47,7 @@ import com.zizaike.passport.service.UserService;
 public class LoginServiceImpl implements LoginService {
     private static final Logger LOG = LoggerFactory.getLogger(LoginServiceImpl.class);
     @Autowired
-    private UserService userService;
-    @Autowired
-    private TlasService tlasService;
-    @Autowired
-    private PassportService passportService;
+    private CommonService commonService;
     @Autowired
     private SSIDRedisService ssidRedisService;
     @Autowired
@@ -85,40 +72,7 @@ public class LoginServiceImpl implements LoginService {
         LoginEventSource loginEventSource = LoginEventSource.newInstance(loginVo);
         try {
 
-            if (!CommonUtil.isPasswordFormatCorrect(loginVo.getPassword())) {
-                throw new PasswordFormatIncorrectException();
-            }
-            User user = null;
-            if (loginVo.getLoginType() == LoginType.EMAIL_LOGIN) {
-                user = userService.findByEmail(loginVo.getEmail());
-            } else if (loginVo.getLoginType() == LoginType.MOBILE_LOGIN) {
-                user = userService.findByMobile(loginVo.getMobile());
-            } else if (loginVo.getLoginType() == LoginType.USER_NAME_LOGIN) {
-                user = userService.findByUserName(loginVo.getUserName());
-            }
-            if (user == null) {
-                throw new UserNotExistException();
-            }
-            Passport passport = passportService.findPassport(user.getUserId());
-            passport.setLoginType(loginVo.getLoginType());
-            passport.setIsFirst(false);
-            String hash = CommonUtil.generateHash(loginVo.getPassword(), tlasService.getSalt(passport.getSalt()));
-            if (StringUtils.isNotEmpty(passport.getHash()) && !passport.getHash().equals(hash)) {
-                LOG.info("login failed incorrect password, userId={} ", passport.getUserId());
-                throw new PasswordIncorrectException();
-            }
-            // 保护性copy，防止外部接口直接使用原对象
-            Passport ssidPassport = new Passport();
-            try {
-                BeanUtils.copyProperties(ssidPassport, passport);
-            } catch (Exception e) {
-                LOG.error("copy passport is error", e);
-            }
-
-            // 调用生成SSID的方法
-            passportResult = passportService.getSSID(loginVo.getChannelType(), ssidPassport);
-            LOG.info("passport login success, userId={}, use {}ms", passportResult.getPassport().getUserId(),
-                    System.currentTimeMillis() - start);
+            passportResult = commonService.login(loginVo);
             loginEventSource.setUserId(passportResult.getPassport().getUserId());
             BusinessOperationCompletedEvent<LoginEventSource> completedEvent = new BusinessOperationCompletedEvent<LoginEventSource>(
                     PassportBusinessOperation.LOGIN, loginEventSource);
