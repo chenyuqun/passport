@@ -14,6 +14,7 @@ import com.zizaike.core.common.util.CommonUtil;
 import com.zizaike.core.constants.Constant;
 import com.zizaike.core.framework.exception.ZZKServiceException;
 import com.zizaike.entity.passport.Passport;
+import com.zizaike.entity.passport.PassportResult;
 import com.zizaike.entity.passport.User;
 import com.zizaike.entity.passport.domain.Activation;
 import com.zizaike.entity.passport.domain.ChannelType;
@@ -23,6 +24,7 @@ import com.zizaike.entity.passport.domain.UserType;
 import com.zizaike.entity.passport.domain.vo.RegisterVo;
 import com.zizaike.entity.passport.domain.vo.RegisterVo.RegisterVoBuilder;
 import com.zizaike.is.passport.RegisterService;
+import com.zizaike.passport.service.CommonService;
 import com.zizaike.passport.service.PassportService;
 import com.zizaike.passport.service.TlasService;
 import com.zizaike.passport.service.UserService;
@@ -42,6 +44,8 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
     protected PassportService passportService;
     @Autowired
     protected RegisterService registerService;
+    @Autowired
+    protected CommonService commonService;
 
     /**
      * 生成随机ID
@@ -56,13 +60,13 @@ public class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
         return id;
     }
 
-    public Passport registerTestPassport() throws ZZKServiceException {
+    public PassportResult registerTestPassport() throws ZZKServiceException {
         String email = generateRandomMail();
         String password = PASSWORD_UNENCRPTED;
         String ip = IP_DEFAULT;
         RegisterVo registerVo = new RegisterVoBuilder(email, null, password, ip).setChannelType(ChannelType.WEB)
                 .setRegisterType(RegisterType.EMAIL).build();
-        return registerService.registerPassport(registerVo, "").getPassport();
+        return commonService.register(registerVo);
     }
 
     /**

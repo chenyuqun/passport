@@ -70,7 +70,7 @@ public class LoginServiceTest extends BaseTest{
     
     @Test(description="密码出错" ,expectedExceptions=PasswordIncorrectException.class)
     public void testLoginIncorrectPassword() throws ZZKServiceException {
-        Passport passport = registerTestPassport();
+        Passport passport = registerTestPassport().getPassport();
         User user = userService.findByUserId(passport.getUserId());
         LoginVoBuilder loginVoBuilder = new LoginVoBuilder(user.getEmail(), null, null, CommonUtil.generatePassword(null, "LUCKY_DAY"), IP_DEFAULT);
         loginVoBuilder.setChannelType(ChannelType.APP).setLoginType(LoginType.EMAIL_LOGIN);
@@ -78,7 +78,7 @@ public class LoginServiceTest extends BaseTest{
     }
     @Test(description="成功登陆")
     public void testLoginSuccess() throws ZZKServiceException {
-        Passport passport = registerTestPassport();
+        Passport passport = registerTestPassport().getPassport();
         User user = userService.findByUserId(passport.getUserId());
         LoginVoBuilder loginVoBuilder = new LoginVoBuilder(user.getEmail(), null, null, PASSWORD_UNENCRPTED, IP_DEFAULT);
         loginVoBuilder.setChannelType(ChannelType.APP).setLoginType(LoginType.EMAIL_LOGIN);
