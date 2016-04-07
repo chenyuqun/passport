@@ -22,7 +22,7 @@
 		<maven.source.version>2.1</maven.source.version>
 		<maven.clean.version>2.5</maven.clean.version>
 		<maven.war.version>2.4</maven.war.version>
-		<maven.surefire.version>2.12</maven.surefire.version>
+		<maven.surefire.version>2.17</maven.surefire.version>
 		<maven.findbugs.version>2.5.2</maven.findbugs.version>
 
 		<zizaike.core.version>1.0.6-SNAPSHOT</zizaike.core.version>

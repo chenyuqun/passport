@@ -94,7 +94,7 @@ public class LoginServiceImpl implements LoginService {
             throw new IllegalParamterException("SSID is error");
         }
         long start = System.currentTimeMillis();
-        Passport passport = ssidRedisService.getPassport(channelType, SSID);
+        Passport passport = ssidRedisService.getPassport( SSID);
         if (passport == null) {
             LOG.info("get passport failed,SSID={}", SSID);
             throw new SSIDAuthenticationException();

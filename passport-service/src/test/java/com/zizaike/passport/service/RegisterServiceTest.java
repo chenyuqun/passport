@@ -38,7 +38,7 @@ import com.zizaike.passport.basetest.BaseTest;
  * @since JDK 1.7
  */
 @Transactional
-@TransactionConfiguration(defaultRollback = false)
+@TransactionConfiguration(defaultRollback = true)
 public class RegisterServiceTest extends BaseTest {
     @Autowired
     private RegisterService registerService;
@@ -72,14 +72,14 @@ public class RegisterServiceTest extends BaseTest {
         Assert.assertEquals(passport.getUserId(), user.getUserId());
 
         String SSID = result.getExpends().get("SSID");
-        Assert.assertEquals(user.getUserId(), ssidRedisService.getPassport(ChannelType.APP, SSID).getUserId());
+        Assert.assertEquals(user.getUserId(), ssidRedisService.getPassport(SSID).getUserId());
     }
 
     @Test
     public void testRegisterEmailSuccess() throws ZZKServiceException {
 
         String password = PASSWORD_UNENCRPTED;
-        RegisterVoBuilder builder = new RegisterVoBuilder(generateRandomMail(), null, password, IP_DEFAULT);
+        RegisterVoBuilder builder = new RegisterVoBuilder("173db133-a7fc-467b-b770-cbeb77877988@zizaike.com", null, password, IP_DEFAULT);
         builder.setChannelType(ChannelType.APP);
         builder.setRegisterType(RegisterType.EMAIL);
         PassportResult result = registerService.registerPassport(builder.build(), null);
@@ -94,7 +94,7 @@ public class RegisterServiceTest extends BaseTest {
         Assert.assertEquals(passport.getUserId(), user.getUserId());
 
         String SSID = result.getExpends().get("SSID");
-        Assert.assertEquals(user.getUserId(), ssidRedisService.getPassport(ChannelType.APP, SSID).getUserId());
+        Assert.assertEquals(user.getUserId(), ssidRedisService.getPassport( SSID).getUserId());
     }
 
 }

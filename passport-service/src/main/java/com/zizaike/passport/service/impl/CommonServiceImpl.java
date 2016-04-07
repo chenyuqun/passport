@@ -25,8 +25,10 @@ import com.zizaike.core.common.util.date.DateUtil;
 import com.zizaike.core.constants.Constant;
 import com.zizaike.core.framework.exception.IllegalParamterException;
 import com.zizaike.core.framework.exception.ZZKServiceException;
+import com.zizaike.core.framework.exception.passport.EmailAlreadlyExistException;
 import com.zizaike.core.framework.exception.passport.EmailFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.IPFormatIncorrectException;
+import com.zizaike.core.framework.exception.passport.MobileAlreadlyExistException;
 import com.zizaike.core.framework.exception.passport.MobileFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.PasswordFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.PasswordIncorrectException;
@@ -81,6 +83,9 @@ public class CommonServiceImpl implements CommonService {
         if (!PassportUtil.isPasswordFormatCorrect(registerVo.getPassword())) {
             throw new PasswordFormatIncorrectException();
         }
+        if(registerVo.getRegisterType()==null){
+            throw new IllegalParamterException(" register registerType is not null");
+        }
         /**
          * 注册参数正则校验
          */
@@ -90,11 +95,11 @@ public class CommonServiceImpl implements CommonService {
          */
         if (RegisterType.MOBILE == registerVo.getRegisterType()) {
             if (userService.isMobileExist(registerVo.getMobile())) {
-                throw new UserAlreadlyExistException();
+                throw new MobileAlreadlyExistException();
             }
         } else if (RegisterType.EMAIL == registerVo.getRegisterType()) {
             if (userService.isEmailExist(registerVo.getEmail())) {
-                throw new UserAlreadlyExistException();
+                throw new EmailAlreadlyExistException();
             }
         }
         User user = buildUser(registerVo);
@@ -107,7 +112,7 @@ public class CommonServiceImpl implements CommonService {
         passportService.save(passport);
 
         // 调用生成SSID的方法
-        passportResult = passportService.getSSID(registerVo.getChannelType(), passport);
+        passportResult = passportService.getSSID(passport);
         long end = System.currentTimeMillis();
         LOG.info("passport register success, userId={} use{}ms", passport.getUserId(), end - start);
         return passportResult;
@@ -247,7 +252,7 @@ public class CommonServiceImpl implements CommonService {
         }
 
         // 调用生成SSID的方法
-        passportResult = passportService.getSSID(loginVo.getChannelType(), ssidPassport);
+        passportResult = passportService.getSSID(ssidPassport);
         LOG.info("passport login success, userId={}, use {}ms", passportResult.getPassport().getUserId(),
                 System.currentTimeMillis() - start);
         LOG.info("passport login success, userId={}, use {}ms", passportResult.getPassport().getUserId(),

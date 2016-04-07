@@ -55,17 +55,17 @@ public class PassportServiceTest extends BaseTest{
     }
     @Test(description="测试查询条件:  is null", expectedExceptions = SSIDAuthenticationException.class)
     public void testSSIDIsNull() throws ZZKServiceException{
-        passportService.checkSSID(ChannelType.APP, "");
+        passportService.checkSSID( "");
     }
     @Test(description="测试查询条件: ssid is UUID", expectedExceptions = SSIDAuthenticationException.class)
     public void testSSIDUnknownException() throws ZZKServiceException{
-        passportService.checkSSID(ChannelType.APP, UUID.randomUUID().toString());
+        passportService.checkSSID( UUID.randomUUID().toString());
     }
     @Test
     public void testSSIDSuccess() throws ZZKServiceException{
         Passport passport = addTestPassportByMail();
-        PassportResult result = passportService.getSSID(ChannelType.APP,passport);
-       passportService.checkSSID(ChannelType.APP,result.getExpends().get("SSID"));
+        PassportResult result = passportService.getSSID(passport);
+       passportService.checkSSID(result.getExpends().get("SSID"));
     }
     
     @Test(description="保存 passport is null", expectedExceptions = IllegalParamterException.class)
@@ -103,7 +103,7 @@ public class PassportServiceTest extends BaseTest{
     }
     @Test(expectedExceptions = IllegalParamterException.class)
     public void testGetSSIDPassportNull() throws ZZKServiceException {
-        passportService.getSSID(ChannelType.APP, null);
+        passportService.getSSID( null);
     }
     
     

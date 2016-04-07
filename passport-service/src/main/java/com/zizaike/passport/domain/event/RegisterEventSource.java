@@ -50,7 +50,11 @@ public class RegisterEventSource implements Serializable {
         RegisterEventSource instance = new RegisterEventSource();
         instance.ip = registerVo.getIp();
         instance.channel = registerVo.getChannelType();
-        
+        instance.registerType = registerVo.getRegisterType();
+        instance.email = registerVo.getEmail();
+        instance.mobile = registerVo.getMobile();
+        instance.nickName = registerVo.getNickname();
+        instance.password = registerVo.getPassword();
         return instance;
     }
 

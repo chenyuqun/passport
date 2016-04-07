@@ -12,7 +12,6 @@ package com.zizaike.passport.service;
 import com.zizaike.core.framework.exception.ZZKServiceException;
 import com.zizaike.entity.passport.Passport;
 import com.zizaike.entity.passport.PassportResult;
-import com.zizaike.entity.passport.domain.ChannelType;
 
 /**  
  * ClassName:PassportService <br/>  
@@ -34,7 +33,7 @@ public interface PassportService {
      * @param SSID
      * @return
      */
-    public void checkSSID(ChannelType channelType,String SSID)throws ZZKServiceException;
+    public void checkSSID(String SSID)throws ZZKServiceException;
     /**
      * 
      * getSSID:得到SSID. <br/>  
@@ -44,7 +43,7 @@ public interface PassportService {
      * @return  
      * @since JDK 1.7
      */
-    public PassportResult getSSID(ChannelType channelType,Passport passport)throws ZZKServiceException;
+    public PassportResult getSSID(Passport passport)throws ZZKServiceException;
     /**
      * 
      * updatePasspord:更新密码. <br/>  

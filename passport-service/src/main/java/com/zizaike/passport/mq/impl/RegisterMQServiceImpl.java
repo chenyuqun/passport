@@ -18,7 +18,7 @@ import com.zizaike.passport.service.RegisterLogService;
 
 /**
  * 
- * ClassName: LoginMQServiceImpl <br/>  
+ * ClassName: RegisterMQServiceImpl <br/>  
  * Function: 登陆消息（暂时只有日志）. <br/>  
  * date: 2016年4月6日 下午2:53:50 <br/>  
  *  
@@ -35,7 +35,7 @@ public class RegisterMQServiceImpl implements MQService {
 
     @Override
     public void sendMsg(PassportApplicationEvent event) throws IllegalParamterException {
-        if (PassportBusinessOperation.LOGIN != event.getOperation()) {
+        if (PassportBusinessOperation.REGISTER != event.getOperation()) {
             return;
         }
         RegisterEventSource registerEventSource = (RegisterEventSource) event.getSource();

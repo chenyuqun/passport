@@ -72,15 +72,15 @@ public class PassportServiceImpl implements PassportService {
     }
 
     @Override
-    public void checkSSID(ChannelType channelType,String SSID) throws ZZKServiceException{
-        Passport passport= ssidRedisService.getPassport(channelType, SSID);
+    public void checkSSID(String SSID) throws ZZKServiceException{
+        Passport passport= ssidRedisService.getPassport(SSID);
         if(passport==null){
             throw new SSIDAuthenticationException();
         }
     }
 
     @Override
-    public PassportResult getSSID(ChannelType channelType,Passport passport) throws ZZKServiceException{
+    public PassportResult getSSID(Passport passport) throws ZZKServiceException{
         
         if (passport == null) {
             throw new IllegalParamterException("passport is null");
@@ -97,7 +97,7 @@ public class PassportServiceImpl implements PassportService {
         passport.setHash(null);
         passport.setSalt(null);
         
-        ssidRedisService.setPassport(channelType,SSID, passport, Constant.SSID_EXP);
+        ssidRedisService.setPassport(SSID, passport, Constant.SSID_EXP);
         
         PassportResult result = new PassportResult();
         result.putToExpends("SSID", SSID);
