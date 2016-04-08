@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 import com.zizaike.core.framework.event.BusinessOperation;
 import com.zizaike.core.framework.exception.ZZKServiceException;
+import com.zizaike.passport.domain.PassportBusinessOperation;
 import com.zizaike.passport.domain.event.PassportApplicationEvent;
-import com.zizaike.passport.domain.event.PassportBusinessOperation;
 import com.zizaike.passport.mq.MQService;
 
 /**
@@ -30,13 +30,13 @@ public class PassportEventListener implements ApplicationListener<PassportApplic
      /** @Autowired
     private MQService thirdLoginMQServiceImpl;
     @Autowired
-    private MQService updatePasswordMQServiceImpl;
-    @Autowired
     private MQService bindVerifyInfoMQServiceImpl;**/
     @Autowired
     private MQService loginMQService;
     @Autowired
     private MQService registerMQService;
+    @Autowired
+    private MQService updatePasswordMQService;
 
 
     @Override
@@ -73,6 +73,12 @@ public class PassportEventListener implements ApplicationListener<PassportApplic
                 case REGISTER:
                 mqService = registerMQService;
                 break;
+                case UPDATE_PASSWORD:
+                    mqService = updatePasswordMQService;
+                    break;
+                case RESET_PASSWORD:
+                    mqService = updatePasswordMQService;
+                    break;
              /** case THIRD_LOGIN:
                 mqService = thirdLoginMQServiceImpl;
                 break;
@@ -82,15 +88,7 @@ public class PassportEventListener implements ApplicationListener<PassportApplic
             case VERIFY_USER_IDENTIFY:
                 mqService = bindVerifyInfoMQServiceImpl;
                 break;
-            case UPDATE_PASSWORD:
-                mqService = updatePasswordMQServiceImpl;
-                break;
-            case RESET_PASSWORD:
-                mqService = updatePasswordMQServiceImpl;
-                break;
-            case FORGET_PASSWORD:
-                mqService = updatePasswordMQServiceImpl;
-                break;**/
+           **/
             default:
                 break;
         }

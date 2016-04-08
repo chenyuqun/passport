@@ -10,7 +10,6 @@
 package com.zizaike.passport.service.impl;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -32,7 +31,6 @@ import com.zizaike.core.framework.exception.passport.MobileAlreadlyExistExceptio
 import com.zizaike.core.framework.exception.passport.MobileFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.PasswordFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.PasswordIncorrectException;
-import com.zizaike.core.framework.exception.passport.UserAlreadlyExistException;
 import com.zizaike.core.framework.exception.passport.UserNotExistException;
 import com.zizaike.entity.passport.Passport;
 import com.zizaike.entity.passport.PassportResult;

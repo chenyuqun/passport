@@ -5,7 +5,7 @@ import java.util.Date;
 import com.zizaike.entity.passport.domain.ChannelType;
 import com.zizaike.entity.passport.domain.OperateStatus;
 import com.zizaike.entity.passport.domain.RegisterType;
-import com.zizaike.passport.domain.event.RegisterEventSource;
+import com.zizaike.passport.domain.source.RegisterEventSource;
 
 /**
  * 
@@ -19,7 +19,7 @@ import com.zizaike.passport.domain.event.RegisterEventSource;
  */
 public class RegisterLog {
     private Integer id;
-
+    
     private Integer userId;
 
     private String userName;

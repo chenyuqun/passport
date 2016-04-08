@@ -25,8 +25,8 @@ import com.zizaike.entity.passport.PassportResult;
 import com.zizaike.entity.passport.domain.vo.RegisterVo;
 import com.zizaike.is.passport.RegisterService;
 import com.zizaike.passport.bo.EventPublishService;
-import com.zizaike.passport.domain.event.PassportBusinessOperation;
-import com.zizaike.passport.domain.event.RegisterEventSource;
+import com.zizaike.passport.domain.PassportBusinessOperation;
+import com.zizaike.passport.domain.source.RegisterEventSource;
 import com.zizaike.passport.service.CommonService;
 import com.zizaike.passport.service.UserService;
 
@@ -61,6 +61,7 @@ public class RegisterServiceImpl implements RegisterService {
             passportResult = commonService.register(registerVo);
             eventSource.setUserId(passportResult.getPassport().getUserId());
             eventSource.setRegisterAt(passportResult.getPassport().getCreateAt());
+            eventSource.setSSID(passportResult.getExpends().get("SSID"));
             BusinessOperationCompletedEvent<RegisterEventSource> completedEvent = new BusinessOperationCompletedEvent<RegisterEventSource>(
                     PassportBusinessOperation.REGISTER, eventSource);
             eventPublishService.publishEvent(completedEvent);

@@ -1,4 +1,4 @@
-package com.zizaike.passport.domain.event;
+package com.zizaike.passport.domain.source;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -52,6 +52,7 @@ public class LoginEventSource implements Serializable {
     private String ip;
 
     private Date loginAt = new Date();
+    private String SSID ;
 
     /** MD5(登陆密码) **/
     private String password;
@@ -160,13 +161,22 @@ public class LoginEventSource implements Serializable {
     public void setMobile(String mobile) {
         this.mobile = mobile;
     }
+    
+    public String getSSID() {
+        return SSID;
+    }
+
+    public void setSSID(String sSID) {
+        SSID = sSID;
+    }
 
     @Override
     public String toString() {
         return "LoginEventSource [userId=" + userId + ", loginType=" + loginType + ", channel=" + channel
                 + ", userName=" + userName + ", nickName=" + nickName + ", email=" + email + ", mobile=" + mobile
-                + ", ip=" + ip + ", loginAt=" + loginAt + ", password=" + password + "]";
+                + ", ip=" + ip + ", loginAt=" + loginAt + ", SSID=" + SSID + ", password=" + password + "]";
     }
 
+    
     
 }

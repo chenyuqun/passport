@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zizaike.core.framework.exception.IllegalParamterException;
+import com.zizaike.core.framework.exception.ZZKServiceException;
+import com.zizaike.is.redis.passport.SSIDRedisService;
 import com.zizaike.passport.dao.UserSSIDDao;
 import com.zizaike.passport.entity.UserSSID;
 import com.zizaike.passport.service.UserSSIDService;
@@ -38,6 +40,8 @@ public class UserSSIDServiceImpl implements UserSSIDService {
     private static final Logger LOG = LoggerFactory.getLogger(UserSSIDServiceImpl.class);
     @Autowired
     private UserSSIDDao userSSIDDao;
+    @Autowired
+    private SSIDRedisService SSIDRedisService;
 
     @Override
     public List<UserSSID> findByUserId(Integer userId) throws IllegalParamterException {
@@ -67,22 +71,28 @@ public class UserSSIDServiceImpl implements UserSSIDService {
     }
 
     @Override
-    public void deleteSSID(String SSID) throws IllegalParamterException {
+    public void deleteSSID(String SSID) throws ZZKServiceException {
 
         if (StringUtils.isEmpty(SSID)) {
             throw new IllegalParamterException("deleteSSID  ssid is not null");
         }
+        SSIDRedisService.delPassport(SSID);
         userSSIDDao.deleteSSID(SSID);
     }
 
     @Override
-    public void deleteByUserId(Integer userId) throws IllegalParamterException {
-
+    public void deleteByUserId(Integer userId) throws ZZKServiceException {
+        long start = System.currentTimeMillis();
         if (userId == null || userId <= 0) {
             throw new IllegalParamterException("deleteByUserId userId is not null");
         }
+        List<UserSSID> list = findByUserId(userId);
+        //删除缓存
+        for (UserSSID userSSID : list) {
+            SSIDRedisService.delPassport(userSSID.getSsid());
+        }
         userSSIDDao.deleteByUserId(userId);
-
+        LOG.info("userSSID deleteByUserId success, userId={} use{}ms", userId, System.currentTimeMillis() - start);
     }
 
 }

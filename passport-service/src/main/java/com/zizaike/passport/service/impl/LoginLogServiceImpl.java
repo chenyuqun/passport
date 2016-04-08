@@ -9,6 +9,7 @@
 
 package com.zizaike.passport.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,12 @@ public class LoginLogServiceImpl implements LoginLogService {
         }
         if(loginLog.getChannel()==null){
             throw new IllegalParamterException(" loginLog channel is not null");
+        }
+        if(StringUtils.isEmpty(loginLog.getReason())){
+            throw new IllegalParamterException(" loginLog reason is not null");
+        }
+        if(StringUtils.isEmpty(loginLog.getErrorCode())){
+            throw new IllegalParamterException(" loginLog errorCode is not null");
         }
         loginLog.setStatus(OperateStatus.FAILURE);
         loginLogDao.save(loginLog);

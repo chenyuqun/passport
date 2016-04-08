@@ -22,7 +22,6 @@ import com.zizaike.core.framework.exception.ZZKServiceException;
 import com.zizaike.core.framework.exception.passport.SSIDAuthenticationException;
 import com.zizaike.entity.passport.Passport;
 import com.zizaike.entity.passport.PassportResult;
-import com.zizaike.entity.passport.domain.ChannelType;
 import com.zizaike.passport.basetest.BaseTest;
 
 /**  

@@ -1,4 +1,4 @@
-package com.zizaike.passport.domain.event;
+package com.zizaike.passport.domain.source;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -45,6 +45,7 @@ public class RegisterEventSource implements Serializable {
     private String password;
 
     private String nickName;
+    private String SSID;
 
     public static RegisterEventSource newInstance(RegisterVo registerVo) {
         RegisterEventSource instance = new RegisterEventSource();
@@ -114,12 +115,21 @@ public class RegisterEventSource implements Serializable {
         return nickName;
     }
 
+    
+    public String getSSID() {
+        return SSID;
+    }
+
+    public void setSSID(String sSID) {
+        SSID = sSID;
+    }
 
     @Override
     public String toString() {
         return "RegisterEventSource [ip=" + ip + ", registerAt=" + registerAt + ", channel=" + channel + ", userId="
                 + userId + ", registerType=" + registerType + ", userName=" + userName + ", mobile=" + mobile
-                + ", email=" + email + ", password=" + password + ", nickName=" + nickName + "]";
+                + ", email=" + email + ", password=" + password + ", nickName=" + nickName + ", SSID=" + SSID + "]";
     }
 
+    
 }

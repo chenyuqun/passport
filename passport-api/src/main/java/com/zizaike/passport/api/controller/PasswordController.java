@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.zizaike.core.bean.ResponseResult;
 import com.zizaike.core.common.util.MD5Util;
 import com.zizaike.core.framework.exception.ZZKServiceException;
+import com.zizaike.entity.passport.domain.ChannelType;
 import com.zizaike.is.passport.PasswordService;
 import com.zizaike.is.passport.RegisterService;
 import com.zizaike.passport.api.BaseAjaxController;
@@ -71,16 +72,16 @@ public class PasswordController  extends BaseAjaxController {
      */
     @RequestMapping(value = "updatePassword", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseResult updatePassword(Integer userId, String oldPassword, String newPassword, String ip) throws ZZKServiceException {
+    public ResponseResult updatePassword(Integer userId, String oldPassword, String newPassword, String ip,ChannelType channelType) throws ZZKServiceException {
         ResponseResult result = new ResponseResult();
-        passwordService.updatePassword(userId, oldPassword, newPassword, ip);
+        passwordService.updatePassword(userId, oldPassword, newPassword, ip,channelType);
         return result;
     }
     @RequestMapping(value = "resetPassword", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseResult resetPassword(Integer userId, String password, String ip) throws ZZKServiceException {
+    public ResponseResult resetPassword(Integer userId, String password, String ip,ChannelType channelType) throws ZZKServiceException {
         ResponseResult result = new ResponseResult();
-        passwordService.resetPassword(userId,  password, ip);
+        passwordService.resetPassword(userId,  password, ip,channelType);
         return result;
     }
 }

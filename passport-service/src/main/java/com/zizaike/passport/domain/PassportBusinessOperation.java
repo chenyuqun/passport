@@ -1,4 +1,4 @@
-package com.zizaike.passport.domain.event;
+package com.zizaike.passport.domain;
 
 import com.zizaike.core.framework.event.BusinessOperation;
 
@@ -22,8 +22,6 @@ public enum PassportBusinessOperation implements BusinessOperation {
     THIRD_LOGIN("THIRD_LOGIN"),
     /*** 第三方绑定 ***/
     THIRD_BIND("THIRD_BIND"),
-    /*** 找回密码 ***/
-    FORGET_PASSWORD("FORGET_PASSWORD"),
     /*** 更新密码 ***/
     UPDATE_PASSWORD("UPDATE_PASSWORD"),
     /*** 重置密码 ***/
@@ -44,6 +42,6 @@ public enum PassportBusinessOperation implements BusinessOperation {
     }
 
     public static void main(String[] args) {
-        System.err.println(PassportBusinessOperation.FORGET_PASSWORD.getOperation());
+        System.err.println(PassportBusinessOperation.UPDATE_PASSWORD.getOperation());
     }
 }

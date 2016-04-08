@@ -24,11 +24,16 @@ public class UserSSID {
     private Date createAt;
 
     private Date updateAt;
-
+    public static UserSSID newInstance(Integer userId,String SSID){
+        UserSSID instance = new UserSSID();
+        instance.ssid = SSID;
+        instance.userId = userId;
+        return instance;
+    }
     public Integer getId() {
         return id;
     }
-
+    
     public void setId(Integer id) {
         this.id = id;
     }

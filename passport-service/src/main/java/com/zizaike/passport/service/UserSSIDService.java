@@ -3,8 +3,7 @@ package com.zizaike.passport.service;
 import java.util.List;
 
 import com.zizaike.core.framework.exception.IllegalParamterException;
-import com.zizaike.core.framework.springext.database.Master;
-import com.zizaike.core.framework.springext.database.Slave;
+import com.zizaike.core.framework.exception.ZZKServiceException;
 import com.zizaike.passport.entity.UserSSID;
 
 /**
@@ -46,7 +45,7 @@ public interface UserSSIDService {
      * @param SSID  
      * @since JDK 1.7
      */
-    void deleteSSID(String SSID) throws IllegalParamterException;
+    void deleteSSID(String SSID) throws ZZKServiceException;
     /**
      * 
      * deleteByUserId:删除通过userid. <br/>  
@@ -55,5 +54,5 @@ public interface UserSSIDService {
      * @param userId 
      * @since JDK 1.7
      */
-    void deleteByUserId(Integer userId) throws IllegalParamterException;
+    void deleteByUserId(Integer userId) throws ZZKServiceException;
 }

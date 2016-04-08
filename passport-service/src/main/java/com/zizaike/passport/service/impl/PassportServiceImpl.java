@@ -24,7 +24,6 @@ import com.zizaike.core.framework.exception.passport.SSIDAuthenticationException
 import com.zizaike.core.framework.exception.passport.UserNotExistException;
 import com.zizaike.entity.passport.Passport;
 import com.zizaike.entity.passport.PassportResult;
-import com.zizaike.entity.passport.domain.ChannelType;
 import com.zizaike.is.redis.passport.SSIDRedisService;
 import com.zizaike.passport.dao.PassportDao;
 import com.zizaike.passport.service.PassportService;

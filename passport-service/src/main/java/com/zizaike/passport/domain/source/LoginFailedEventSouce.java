@@ -1,4 +1,4 @@
-package com.zizaike.passport.domain.event;
+package com.zizaike.passport.domain.source;
 
 import java.io.Serializable;
 import java.util.Date;

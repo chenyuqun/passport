@@ -29,8 +29,8 @@ import com.zizaike.entity.passport.domain.vo.LoginVo;
 import com.zizaike.is.passport.LoginService;
 import com.zizaike.is.redis.passport.SSIDRedisService;
 import com.zizaike.passport.bo.EventPublishService;
-import com.zizaike.passport.domain.event.LoginEventSource;
-import com.zizaike.passport.domain.event.PassportBusinessOperation;
+import com.zizaike.passport.domain.PassportBusinessOperation;
+import com.zizaike.passport.domain.source.LoginEventSource;
 import com.zizaike.passport.service.CommonService;
 
 /**
@@ -74,6 +74,7 @@ public class LoginServiceImpl implements LoginService {
 
             passportResult = commonService.login(loginVo);
             loginEventSource.setUserId(passportResult.getPassport().getUserId());
+            loginEventSource.setSSID(passportResult.getExpends().get("SSID"));
             BusinessOperationCompletedEvent<LoginEventSource> completedEvent = new BusinessOperationCompletedEvent<LoginEventSource>(
                     PassportBusinessOperation.LOGIN, loginEventSource);
             eventPublishService.publishEvent(completedEvent);

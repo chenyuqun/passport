@@ -10,5 +10,9 @@
     
    <dubbo:service interface="com.zizaike.is.passport.RegisterService" version="1.0.0" ref="registerService"  group="${dubbo.group}" />  
 	<bean id="registerService" class="com.zizaike.passport.service.impl.RegisterServiceImpl" />
+   <dubbo:service interface="com.zizaike.is.passport.LoginService" version="1.0.0" ref="loginService"  group="${dubbo.group}" />  
+	<bean id="loginService" class="com.zizaike.passport.service.impl.LoginServiceImpl" />
+   <dubbo:service interface="com.zizaike.is.passport.LogoutService" version="1.0.0" ref="logoutService"  group="${dubbo.group}" />  
+	<bean id="logoutService" class="com.zizaike.passport.service.impl.LogoutServiceImpl" />
 	
 </beans>

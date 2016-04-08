@@ -8,22 +8,24 @@ import org.springframework.stereotype.Service;
 import com.zizaike.core.framework.event.CommonOperationAction;
 import com.zizaike.core.framework.exception.IllegalParamterException;
 import com.zizaike.core.framework.exception.ZZKServiceException;
+import com.zizaike.passport.domain.PassportBusinessOperation;
 import com.zizaike.passport.domain.event.PassportApplicationEvent;
-import com.zizaike.passport.domain.event.PassportBusinessOperation;
-import com.zizaike.passport.domain.event.RegisterEventSource;
-import com.zizaike.passport.domain.event.RegisterFailedEventSource;
+import com.zizaike.passport.domain.source.RegisterEventSource;
+import com.zizaike.passport.domain.source.RegisterFailedEventSource;
 import com.zizaike.passport.entity.RegisterLog;
+import com.zizaike.passport.entity.UserSSID;
 import com.zizaike.passport.mq.MQService;
 import com.zizaike.passport.service.RegisterLogService;
+import com.zizaike.passport.service.UserSSIDService;
 
 /**
  * 
- * ClassName: RegisterMQServiceImpl <br/>  
- * Function: 登陆消息（暂时只有日志）. <br/>  
- * date: 2016年4月6日 下午2:53:50 <br/>  
- *  
- * @author snow.zhang  
- * @version   
+ * ClassName: RegisterMQServiceImpl <br/>
+ * Function: 登陆消息（暂时只有日志）. <br/>
+ * date: 2016年4月6日 下午2:53:50 <br/>
+ * 
+ * @author snow.zhang
+ * @version
  * @since JDK 1.7
  */
 @Service("registerMQService")
@@ -32,6 +34,8 @@ public class RegisterMQServiceImpl implements MQService {
     private static final Logger LOG = LoggerFactory.getLogger(RegisterMQServiceImpl.class);
     @Autowired
     private RegisterLogService registerLogService;
+    @Autowired
+    private UserSSIDService userSSIDService;
 
     @Override
     public void sendMsg(PassportApplicationEvent event) throws IllegalParamterException {
@@ -40,8 +44,10 @@ public class RegisterMQServiceImpl implements MQService {
         }
         RegisterEventSource registerEventSource = (RegisterEventSource) event.getSource();
         RegisterLog registerLog = RegisterLog.newInstance(registerEventSource);
+        UserSSID userSSID = UserSSID.newInstance(registerEventSource.getUserId(), registerEventSource.getSSID());
         if (CommonOperationAction.Completed == event.getAction()) {
             registerLogService.success(registerLog);
+            userSSIDService.save(userSSID);
             LOG.info("send register success event,event source={}", registerEventSource);
         } else if (CommonOperationAction.Failed == event.getAction()) {
             ZZKServiceException ve = event.getException();

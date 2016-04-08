@@ -17,6 +17,7 @@ import com.google.common.base.Preconditions;
 import com.zizaike.core.common.util.CommonUtil;
 import com.zizaike.core.common.util.string.SuperString;
 import com.zizaike.core.constants.Constant;
+import com.zizaike.core.framework.event.BusinessOperationCompletedEvent;
 import com.zizaike.core.framework.exception.IllegalParamterException;
 import com.zizaike.core.framework.exception.ZZKServiceException;
 import com.zizaike.core.framework.exception.passport.IPFormatIncorrectException;
@@ -25,8 +26,12 @@ import com.zizaike.core.framework.exception.passport.PasswordIncorrectException;
 import com.zizaike.core.framework.exception.passport.UserNotExistException;
 import com.zizaike.entity.passport.Passport;
 import com.zizaike.entity.passport.User;
+import com.zizaike.entity.passport.domain.ChannelType;
+import com.zizaike.entity.passport.domain.UpdatePasswordOpreateType;
 import com.zizaike.is.passport.PasswordService;
-import com.zizaike.passport.domain.event.PassportBusinessOperation;
+import com.zizaike.passport.bo.EventPublishService;
+import com.zizaike.passport.domain.PassportBusinessOperation;
+import com.zizaike.passport.domain.source.UpdatePasswordEventSource;
 import com.zizaike.passport.service.PassportService;
 import com.zizaike.passport.service.TlasService;
 
@@ -46,11 +51,13 @@ public class PasswordServiceImpl implements PasswordService {
     private PassportService passportService;
     @Autowired
     private TlasService tlasService;
+    @Autowired
+    private EventPublishService eventPublishService;
 
     @Override
-    public void updatePassword(Integer userId, String oldMD5Password, String newMD5Password, String ip)
+    public void updatePassword(Integer userId, String oldMD5Password, String newMD5Password, String ip,ChannelType channelType)
             throws ZZKServiceException {
-
+        
         if (!CommonUtil.isIp(ip)) {
             LOG.info("updatePassword ip error, but can updatePassword, userId={}, ip={}, defaultIp={}", userId, ip,
                     Constant.IP_DEFAULT);
@@ -73,7 +80,7 @@ public class PasswordServiceImpl implements PasswordService {
         }
         User findUser = new User();
         findUser.setUserId(userId);
-        updatePassword(newMD5Password, ip, userId, PassportBusinessOperation.UPDATE_PASSWORD);
+        updatePassword(newMD5Password, ip, userId, PassportBusinessOperation.UPDATE_PASSWORD,channelType);
 
     }
 
@@ -89,18 +96,26 @@ public class PasswordServiceImpl implements PasswordService {
      * @throws ZZKServiceException
      * @since JDK 1.7
      */
-    private void updatePassword(String password, String ip, Integer userId,
-            PassportBusinessOperation passportBusinessOperation) throws ZZKServiceException {
+    private void updatePassword(String newMD5password, String ip, Integer userId,
+            PassportBusinessOperation passportBusinessOperation,ChannelType channelType) throws ZZKServiceException {
         long start = System.currentTimeMillis();
         // 重新生成密码Hash
         String newSalt = tlasService.getRandomSalt(ip);
-        String newHash = CommonUtil.generateHash(password, tlasService.getSalt(newSalt));
+        String newHash = CommonUtil.generateHash(newMD5password, tlasService.getSalt(newSalt));
         // 执行改操作
         passportService.updatePasspword(userId, newHash, newSalt);
-        // userService.updateUsername(null, id);
         LOG.info("modify password successfully userId={} use {}ms", userId, System.currentTimeMillis() - start);
-        // TODO 发送修改密码事件
-
+        UpdatePasswordOpreateType updatePasswordOpreateType = null;
+        if(passportBusinessOperation==PassportBusinessOperation.UPDATE_PASSWORD){
+            updatePasswordOpreateType = UpdatePasswordOpreateType.UPDATE_PASSWORD;
+        }else if(passportBusinessOperation==PassportBusinessOperation.RESET_PASSWORD){
+            updatePasswordOpreateType = UpdatePasswordOpreateType.RESET_PASSWORD;
+        }
+        // 发送修改密码事件
+        UpdatePasswordEventSource eventSource = UpdatePasswordEventSource.newInstance(userId, ip, newMD5password, updatePasswordOpreateType, channelType);
+        BusinessOperationCompletedEvent<UpdatePasswordEventSource> event = new BusinessOperationCompletedEvent<UpdatePasswordEventSource>(
+                passportBusinessOperation, eventSource);
+        eventPublishService.publishEvent(event);
     }
 
     /**
@@ -135,7 +150,7 @@ public class PasswordServiceImpl implements PasswordService {
     }
 
     @Override
-    public void resetPassword(Integer userId, String password, String ip) throws ZZKServiceException {
+    public void resetPassword(Integer userId, String md5Password, String ip,ChannelType channelType) throws ZZKServiceException {
         long start = System.currentTimeMillis();
         if (!CommonUtil.isIp(ip)) {
             LOG.info("resetPassword ip error, but can resetPassword, userId={}, ip={}, defaultIp={}", userId, ip,
@@ -145,13 +160,13 @@ public class PasswordServiceImpl implements PasswordService {
         if (userId == null || userId <= 0) {
             throw new IllegalParamterException("userId is null");
         }
-        validatePasswordAndIpParams(password, ip);
+        validatePasswordAndIpParams(md5Password, ip);
         Passport findPassport = passportService.findPassport(userId);
         if (findPassport == null) {
             throw new UserNotExistException();
         }
-        updatePassword(password, ip, userId, PassportBusinessOperation.RESET_PASSWORD);
-        LOG.info("resetPassport success, userId={}, password={}, ip={}, useTime={}", userId, password, ip,
+        updatePassword(md5Password, ip, userId, PassportBusinessOperation.RESET_PASSWORD,channelType);
+        LOG.info("resetPassport success, userId={}, md5Password={}, ip={}, useTime={}", userId, md5Password, ip,
                 System.currentTimeMillis() - start);
 
     }

@@ -5,7 +5,7 @@ import java.util.Date;
 import com.zizaike.entity.passport.domain.ChannelType;
 import com.zizaike.entity.passport.domain.LoginType;
 import com.zizaike.entity.passport.domain.OperateStatus;
-import com.zizaike.passport.domain.event.LoginEventSource;
+import com.zizaike.passport.domain.source.LoginEventSource;
 
 /**
  * 
