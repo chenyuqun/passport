@@ -22,7 +22,6 @@ import com.zizaike.core.framework.exception.passport.MobileFormatIncorrectExcept
 import com.zizaike.entity.passport.domain.ChannelType;
 import com.zizaike.entity.passport.domain.RegisterType;
 import com.zizaike.entity.passport.domain.vo.RegisterVo.RegisterVoBuilder;
-import com.zizaike.is.open.UserService;
 import com.zizaike.is.passport.RegisterService;
 import com.zizaike.passport.api.BaseAjaxController;
 
@@ -40,9 +39,7 @@ import com.zizaike.passport.api.BaseAjaxController;
 public class RegisterController  extends BaseAjaxController {
     @Autowired
     private RegisterService registerService;
-    @Autowired
-    private UserService userService;
-    @RequestMapping(value = "mobileRegister", method = RequestMethod.POST)
+    @RequestMapping(value = "mobile", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult registerMobile(String mobile,String password ,String ip,ChannelType channelType,String extend) throws ZZKServiceException {
         ResponseResult result = new ResponseResult();
@@ -51,7 +48,7 @@ public class RegisterController  extends BaseAjaxController {
         result.setInfo(registerService.registerPassport(builder.build(), extend));
         return result;
     }
-    @RequestMapping(value = "emailRegister", method = RequestMethod.POST)
+    @RequestMapping(value = "email", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult registerEmail(String email,String password ,String ip,ChannelType channelType,String extend) throws ZZKServiceException {
         ResponseResult result = new ResponseResult();

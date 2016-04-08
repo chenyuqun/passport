@@ -21,9 +21,9 @@
 			http://www.springframework.org/schema/task/spring-task-4.0.xsd"
 	default-lazy-init="true">
 	 <!-- 注解验证支持 -->
-    <aop:aspectj-autoproxy proxy-target-class="true" />
+    <!-- <aop:aspectj-autoproxy proxy-target-class="true" />
     <bean
-        class="com.zizaike.core.framework.validation.support.ParameterValidationAopSupport" />
+        class="com.zizaike.core.framework.validation.support.ParameterValidationAopSupport" /> -->
 	 <!-- Spring 监听器异步执行 -->
     <bean id="applicationEventMulticaster"
         class="com.zizaike.passport.util.AsyncApplicationEventMulticaster" />

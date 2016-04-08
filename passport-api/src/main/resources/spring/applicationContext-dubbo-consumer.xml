@@ -1,4 +1,4 @@
-®<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
@@ -7,14 +7,17 @@
     http://code.alibabatech.com/schema/dubbo
     http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
    
-   <dubbo:application name="${dubbo.applicationName}"  />
-   <dubbo:registry address="${dubbo.address}"  file="${dubbo.applicationName}/dubbo.cache"/>  
-   <dubbo:protocol host="${dubbo.host}" name="dubbo" port="${dubbo.port}" />
-    <!-- 配置超时时间 -->
-   <dubbo:consumer timeout="${dubbo.timeout}"/>
-   <dubbo:monitor protocol="registry"/>
+  <dubbo:application name="${dubbo.applicationName}" />
+	<dubbo:registry address="${dubbo.address}"
+		file="${dubbo.applicationName}/dubbo.cache" />
+	<dubbo:protocol host="${dubbo.host}" name="dubbo"
+		port="${dubbo.port}" />
+	<!-- 配置超时时间 -->
+	<dubbo:consumer timeout="${dubbo.timeout}" />
+	<dubbo:monitor protocol="registry" />
     <dubbo:reference id="registerService" interface="com.zizaike.is.passport.RegisterService" version="1.0.0" group="${dubbo.group}"  check="false"/>
     <dubbo:reference id="loginService" interface="com.zizaike.is.passport.LoginService" version="1.0.0" group="${dubbo.group}"  check="false"/>
     <dubbo:reference id="logoutService" interface="com.zizaike.is.passport.LogoutService" version="1.0.0" group="${dubbo.group}"  check="false"/>
+    <dubbo:reference id="passwordService" interface="com.zizaike.is.passport.PasswordService" version="1.0.0" group="${dubbo.group}"  check="false"/>
 	
 </beans>
