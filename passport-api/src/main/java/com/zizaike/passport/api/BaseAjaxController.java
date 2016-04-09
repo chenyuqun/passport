@@ -49,6 +49,7 @@ public abstract class BaseAjaxController {
                 resultBean.setMessage(iErrorCode.getErrorMsg());
             }
             log.error("ZZKServiceException errorCode={},errorMsg={}", iErrorCode.getErrorCode(),iErrorCode.getErrorMsg());
+            log.error("ZZKServiceException exception", ex);
         } else {
             log.error("Exception:", ex);
             log.error("system error ", ex.getCause());
