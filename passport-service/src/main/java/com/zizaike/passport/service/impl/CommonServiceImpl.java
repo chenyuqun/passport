@@ -105,6 +105,7 @@ public class CommonServiceImpl implements CommonService {
         Passport passport = buildPassport(user.getUserId(), registerVo.getPassword(), registerVo.getIp());
         passport.setIsFirst(true);
         passport.setUserId(user.getUserId());
+        passport.setUserType(user.getUserType());
         // 一年后过期
         passport.setExpireAt(DateUtil.addYear(new Date(), 1));
         passportService.save(passport);
@@ -163,6 +164,7 @@ public class CommonServiceImpl implements CommonService {
         passport.setUserId(userId);
         passport.setSalt(salt);
         passport.setHash(hash);
+        passport.setIp(ip);
         Date nowDate = new Date();
         passport.setCreateAt(nowDate);
         passport.setUpdateAt(nowDate);
@@ -236,6 +238,8 @@ public class CommonServiceImpl implements CommonService {
         Passport passport = passportService.findPassport(user.getUserId());
         passport.setLoginType(loginVo.getLoginType());
         passport.setIsFirst(false);
+        passport.setIp(loginVo.getIp());
+        passport.setUserType(user.getUserType());
         String hash = CommonUtil.generateHash(loginVo.getPassword(), tlasService.getSalt(passport.getSalt()));
         if (StringUtils.isNotEmpty(passport.getHash()) && !passport.getHash().equals(hash)) {
             LOG.info("login failed incorrect password, userId={} ", passport.getUserId());
