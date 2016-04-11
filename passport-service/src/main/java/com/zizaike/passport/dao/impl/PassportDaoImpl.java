@@ -54,14 +54,9 @@ public class PassportDaoImpl extends GenericMyIbatisDao<Passport, Integer> imple
     }
 
     @Override
-    public Integer updatePassword(String hash, String salt, Integer userId) {
+    public Integer updatePassword(Passport passport) {
 
-        Passport passport = new Passport();
-        passport.setHash(hash);
-        passport.setSalt(salt);
-        passport.setUserId(userId);
-        passport.setUpdateAt(new Date());
-        return this.getSqlSession().update(NAMESPACE + "updatePassword", passport);
+        return this.getSqlSession().update(NAMESPACE + "updateByPrimaryKeySelective", passport);
     }
 
     @Override

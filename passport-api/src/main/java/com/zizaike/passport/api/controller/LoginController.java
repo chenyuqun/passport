@@ -25,7 +25,7 @@ import com.zizaike.passport.api.BaseAjaxController;
 
 /**  
  * ClassName:RegisterController <br/>  
- * Function: 密码服务. <br/>  
+ * Function: 登陆服务. <br/>  
  * Date:     2016年3月31日 上午10:10:14 <br/>  
  * @author   snow.zhang  
  * @version    
@@ -50,7 +50,7 @@ public class LoginController  extends BaseAjaxController {
      * @throws ZZKServiceException  
      * @since JDK 1.7
      */
-    @RequestMapping(value = "emailLogin", method = RequestMethod.POST)
+    @RequestMapping(value = "email", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult emailLogin(String email,String password,String ip,ChannelType channelType) throws ZZKServiceException {
         ResponseResult result = new ResponseResult();
@@ -72,7 +72,7 @@ public class LoginController  extends BaseAjaxController {
      * @throws ZZKServiceException  
      * @since JDK 1.7
      */
-    @RequestMapping(value = "mobileLogin", method = RequestMethod.POST)
+    @RequestMapping(value = "mobile", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult mobileLogin(String mobile,String password,String ip,ChannelType channelType) throws ZZKServiceException {
         ResponseResult result = new ResponseResult();
@@ -94,7 +94,7 @@ public class LoginController  extends BaseAjaxController {
      * @throws ZZKServiceException  
      * @since JDK 1.7
      */
-    @RequestMapping(value = "userNameLogin", method = RequestMethod.POST)
+    @RequestMapping(value = "userName", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult userNameLogin(String userName,String password,String ip,ChannelType channelType) throws ZZKServiceException {
         ResponseResult result = new ResponseResult();

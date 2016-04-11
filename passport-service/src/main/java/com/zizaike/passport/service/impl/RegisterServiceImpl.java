@@ -86,7 +86,7 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Override
     public Boolean isEmailExist(String email) throws EmailFormatIncorrectException {
-        if (!CommonUtils.isMobile(email)) {
+        if (!CommonUtils.isEmail(email)) {
             throw new EmailFormatIncorrectException();
         }
         return userService.isEmailExist(email);

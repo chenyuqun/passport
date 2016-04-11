@@ -69,7 +69,7 @@ public interface PassportDao {
      * @since JDK 1.7
      */
     @Master
-    public Integer updatePassword ( String hash, String salt, Integer userId);
+    public Integer updatePassword (Passport passport);
     
     /**
      * 

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zizaike.core.common.util.date.DateUtil;
 import com.zizaike.core.constants.Constant;
 import com.zizaike.core.framework.exception.IllegalParamterException;
 import com.zizaike.core.framework.exception.ZZKServiceException;
@@ -119,7 +120,14 @@ public class PassportServiceImpl implements PassportService {
         if(passport == null){
             throw new UserNotExistException();
         }
-        passportDao.updatePassword(hash, salt, userId);
+        Passport passportUpdate = new Passport();
+        passport.setHash(hash);
+        // 一年后过期
+        passport.setExpireAt(DateUtil.addYear(new Date(), 1));
+        passport.setSalt(salt);
+        passport.setUserId(userId);
+        passport.setPlaintext(false);
+        passportDao.updatePassword(passportUpdate);
         LOG.info("updatePassword, userID={},  hash={}, use={}ms",  userId, hash, System.currentTimeMillis() - start);;
 
     }

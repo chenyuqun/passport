@@ -108,6 +108,8 @@ public class CommonServiceImpl implements CommonService {
         passport.setUserType(user.getUserType());
         // 一年后过期
         passport.setExpireAt(DateUtil.addYear(new Date(), 1));
+        //密文
+        passport.setPlaintext(false);
         passportService.save(passport);
 
         // 调用生成SSID的方法

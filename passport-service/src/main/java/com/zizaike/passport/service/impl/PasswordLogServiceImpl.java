@@ -9,6 +9,8 @@
 
 package com.zizaike.passport.service.impl;
 
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,7 @@ public class PasswordLogServiceImpl implements PasswordLogService {
             throw new IllegalParamterException(" passwordLog channel is not null");
         }
         passwordLog.setStatus(OperateStatus.SUCCESS);
+        passwordLog.setCreateAt(new Date());
         passwordLogDao.save(passwordLog);
         
     }
@@ -66,6 +69,7 @@ public class PasswordLogServiceImpl implements PasswordLogService {
             throw new IllegalParamterException(" passwordLog errorCode is not null");
         }
         passwordLog.setStatus(OperateStatus.FAILURE);
+        passwordLog.setCreateAt(new Date());
         passwordLogDao.save(passwordLog);
         
     }

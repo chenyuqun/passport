@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.zizaike.core.framework.event.CommonOperationAction;
 import com.zizaike.core.framework.exception.IllegalParamterException;
 import com.zizaike.core.framework.exception.ZZKServiceException;
+import com.zizaike.entity.passport.domain.OperateStatus;
 import com.zizaike.passport.domain.PassportBusinessOperation;
 import com.zizaike.passport.domain.event.PassportApplicationEvent;
 import com.zizaike.passport.domain.source.RegisterEventSource;

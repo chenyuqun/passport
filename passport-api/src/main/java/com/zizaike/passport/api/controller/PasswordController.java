@@ -70,14 +70,14 @@ public class PasswordController  extends BaseAjaxController {
      * @throws ZZKServiceException  
      * @since JDK 1.7
      */
-    @RequestMapping(value = "updatePassword", method = RequestMethod.POST)
+    @RequestMapping(value = "update", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult updatePassword(Integer userId, String oldPassword, String newPassword, String ip,ChannelType channelType) throws ZZKServiceException {
         ResponseResult result = new ResponseResult();
         passwordService.updatePassword(userId, oldPassword, newPassword, ip,channelType);
         return result;
     }
-    @RequestMapping(value = "resetPassword", method = RequestMethod.POST)
+    @RequestMapping(value = "reset", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult resetPassword(Integer userId, String password, String ip,ChannelType channelType) throws ZZKServiceException {
         ResponseResult result = new ResponseResult();
