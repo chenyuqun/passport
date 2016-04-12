@@ -31,6 +31,7 @@ import com.zizaike.core.framework.exception.passport.MobileAlreadlyExistExceptio
 import com.zizaike.core.framework.exception.passport.MobileFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.PasswordFormatIncorrectException;
 import com.zizaike.core.framework.exception.passport.PasswordIncorrectException;
+import com.zizaike.core.framework.exception.passport.PasswordTimeOutException;
 import com.zizaike.core.framework.exception.passport.UserNotExistException;
 import com.zizaike.entity.passport.Passport;
 import com.zizaike.entity.passport.PassportResult;
@@ -238,6 +239,9 @@ public class CommonServiceImpl implements CommonService {
             throw new UserNotExistException();
         }
         Passport passport = passportService.findPassport(user.getUserId());
+        if(passport.getExpireAt()!=null && new Date().after(passport.getExpireAt())){
+            throw new PasswordTimeOutException();
+        }
         passport.setLoginType(loginVo.getLoginType());
         passport.setIsFirst(false);
         passport.setIp(loginVo.getIp());
@@ -262,6 +266,11 @@ public class CommonServiceImpl implements CommonService {
         LOG.info("passport login success, userId={}, use {}ms", passportResult.getPassport().getUserId(),
                 System.currentTimeMillis() - start);
         return passportResult;
+    }
+    public static void main(String[] args) {
+        Date date = new Date();
+        Date date2 = DateUtil.addYear(new Date(), 1);
+        System.err.println(date2.after(date));
     }
 
 }

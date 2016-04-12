@@ -121,12 +121,12 @@ public class PassportServiceImpl implements PassportService {
             throw new UserNotExistException();
         }
         Passport passportUpdate = new Passport();
-        passport.setHash(hash);
+        passportUpdate.setHash(hash);
         // 一年后过期
-        passport.setExpireAt(DateUtil.addYear(new Date(), 1));
-        passport.setSalt(salt);
-        passport.setUserId(userId);
-        passport.setPlaintext(false);
+        passportUpdate.setExpireAt(DateUtil.addYear(new Date(), 1));
+        passportUpdate.setSalt(salt);
+        passportUpdate.setUserId(userId);
+        passportUpdate.setPlaintext(false);
         passportDao.updatePassword(passportUpdate);
         LOG.info("updatePassword, userID={},  hash={}, use={}ms",  userId, hash, System.currentTimeMillis() - start);;
 
