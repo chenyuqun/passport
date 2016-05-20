@@ -293,5 +293,10 @@
             <artifactId>guava</artifactId>
             <version>13.0.1</version>
         </dependency>
+        <!-- logstash -->
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+		</dependency>
 	</dependencies>
 </project>
